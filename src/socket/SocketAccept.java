@@ -1,4 +1,4 @@
-package server.socket;
+package socket;
 
 public class SocketAccept implements Runnable{
 	
