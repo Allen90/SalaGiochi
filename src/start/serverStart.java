@@ -1,10 +1,20 @@
 package start;
-import java.utils.*;
+import java.util.*;
+
+import rmi.RmiServer;
+import socket.SocketServer;
+
+
 public class serverStart {
-	private <Arraylist> Client;
-	public static void main(){
+
+	public static void main(String[] args){
 		// thread socket acc
-		// thread rmi acc
+		// thread rmi 
 		// thread update
+		SocketServer taskSocket = new SocketServer();
+		RmiServer taskRmi = new RmiServer();
+		Thread tsock = new Thread(taskSocket);
+		//Thread trmi = new Thread(taskRmi);
+		tsock.start();
 	}
 }
