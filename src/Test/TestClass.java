@@ -1,4 +1,4 @@
-package Test;
+/*package Test;
 
 import static org.junit.Assert.assertTrue;
 
@@ -53,4 +53,4 @@ public class TestClass {
 		System.out.println(PropertiesService.instance().getProperties("a"));
 		System.out.println(PropertiesService.instance().getProperties("b", "banane"));
 	}
-}
+}*/
