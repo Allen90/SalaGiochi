@@ -10,6 +10,8 @@ public class Combinazione {
 	private int valori[] = new int[DIM_SLOT]; 
 	private Random gen = new Random();
 	private String output = null;
+	private boolean vinto = false;
+	private boolean jackpot = false;
 	
 	public Combinazione(){
 		for(int i = 0; i < DIM_SLOT; i++)
