@@ -6,12 +6,10 @@ public class Combinazione {
 
 	private static final int DIM_SLOT = 3;
 	private static final int DIM_RULLO = 5;
-	
-	private int valori[] = new int[DIM_SLOT]; 
 	private Random gen = new Random();
+	private int valori[] = new int[DIM_SLOT]; 
 	private String output = null;
-	private boolean vinto = false;
-	private boolean jackpot = false;
+	private int premio = 0;
 	
 	public Combinazione(){
 		for(int i = 0; i < DIM_SLOT; i++)
@@ -19,17 +17,29 @@ public class Combinazione {
 	}
 	
 	public void ricalcola(){
-		int n = 0;
-		if(gen.nextInt(5)+1 == 5){
-			n = gen.nextInt(4)+1;
-			for(int i = 0; i < DIM_SLOT; i++)
-				valori[i] = n;
-		}else 
-			for(int i = 0; i < DIM_SLOT; i++){
-				valori[i] = gen.nextInt(DIM_RULLO)+1;
-				System.out.println(valori[i]);
-			}
+		premio = 0;
+
+		for(int i = 0; i < DIM_SLOT; i++){
+			valori[i] = gen.nextInt(DIM_RULLO)+1;
+			//System.out.println(valori[i]);
+		}
+		premio = calcolaPremio();
+	}
+
+	private int calcolaPremio(){
+		int premio = 0;
+		boolean flags[] = {false, false};
+		boolean jackpot = false; 
+		for(int i=0; i<2; i++)
+			if(valori[i] == valori[i+1]) flags[i] = true;
 		
+		if(flags[0] && flags[1] && valori[0] == 5) jackpot = true;
+		
+		if(jackpot == true) premio = 100;
+		else if(flags[0] != flags[1]) premio = 10;
+		else if(flags[0] == flags[1] && flags[0] == true) premio = 20;
+		else premio = 0;
+		return premio;
 	}
 	
 	protected void setValori(int[] valori){
@@ -43,5 +53,9 @@ public class Combinazione {
 		for ( int i = 0; i < DIM_SLOT; i++)
 			output += valori[i];
 		return output;
+	}
+	
+	public int getPremio(){
+		return premio;
 	}
 }
