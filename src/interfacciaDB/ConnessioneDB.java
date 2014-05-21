@@ -7,9 +7,9 @@ public class ConnessioneDB {
 	private static Connection con = null;  
     private static ConnessioneDB dbc = null;
     private static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-	private static final String PATH="jdbc:derby:PATHDB";
-	private static final String USER="nomeutente";
-	private static final String PWD="password";
+	private static final String PATH="jdbc:derby:DBSalagiochi";
+	private static final String USER="user";
+	private static final String PWD="pass";
 	
 	private ConnessioneDB() {  
           
