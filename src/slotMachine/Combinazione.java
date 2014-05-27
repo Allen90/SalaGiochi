@@ -51,7 +51,7 @@ public class Combinazione {
 	public String getValori() {
 		output = new String();
 		for ( int i = 0; i < DIM_SLOT; i++)
-			output += valori[i];
+			output += valori[i] + "#";
 		return output;
 	}
 	
