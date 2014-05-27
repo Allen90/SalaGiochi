@@ -2,45 +2,34 @@ package interfacciaDB;
 
 public class StatementsDB {
 
-	static String aggiornaEntrambiCrediti = 
+	static String aggiornaCrediti = // OK
 			"UPDATE utenti"
 			+ "SET crediti = ?, crediti_giornalieri = ?"
 			+ "WHERE userid = ?";
-
-	static String aggiornaCrediti = 
+	
+	static String resetCreditiGiornalieri = // OK
 			"UPDATE utenti"
-			+ "SET crediti = ?"
+			+ "SET crediti_giornalieri = 0"
 			+ "WHERE userid = ?";
 	
-	static String aggiornaCreditiGiornalieri = 
-			"UPDATE utenti"
-			+ "SET crediti_giornalieri = ?"
+	static String aggiungiUtente = // OK
+			"INSERT INTO utenti (userid, pass, nome, cognome)"
+			+ "VALUES (?,?,?,?)";
+	
+	static String getUtente = // OK
+			"SELECT *"
+			+ "FROM utenti"
 			+ "WHERE userid = ?";
 	
-	static String aggiungiUtente = 
-			"INSERT INTO utenti (userid, pass)"
-			+ "VALUES (?,?)";
-	
-//	static String cercaUtente =
-//			"SELECT COUNT(userid) AS presente"
-//			+ "FROM utenti"
-//			+ "WHERE userid = ?";
-	
-	static String getClassifica =
-			"SELECT userid, crediti"
+	static String getClassifica = // OK
+			"SELECT userid, nome, cognome, crediti"
 			+ "FROM utenti"
 			+ "ORDER BY crediti DESC";
 	
-	static String getClassificaGiornaliera = 
+	static String getClassificaGiornaliera = // OK
 			"SELECT userid, crediti_giornalieri"
 			+ "FROM utenti"
 			+ "ORDER BY crediti_giornalieri DESC";
-	
-	static String getStatUtente = 
-			"SELECT partite_slot, crediti_slot, partite_tombola, vittorie_tombola, "
-					+ "partite_rubamazzo, vittorie_rubamazzo"
-			+ "FROM utenti"
-			+ "WHERE userid = ?";
 	
 	static String getUltimoLogin = 
 			"SELECT ultimo_login"
