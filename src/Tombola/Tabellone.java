@@ -43,13 +43,13 @@ public class Tabellone {
 		else return false;
 	}
 	
-	public void stampa(){
-		for(int i=0;i<9;i++){
-			for(int j=0;j<10;j++)
-				System.out.print(numeri[i][j]+"\t");
-			System.out.println();
-		}
-	}
+//	public void stampa(){
+//		for(int i=0;i<9;i++){
+//			for(int j=0;j<10;j++)
+//				System.out.print(numeri[i][j]+"\t");
+//			System.out.println();
+//		}
+//	}
 	
 	public int estraiDaDecina(int decina){
 		int estratto = 0;
@@ -60,5 +60,10 @@ public class Tabellone {
 		}while(numeri[decina][unita] == 0);
 		numeri[decina][unita] = 0;
 		return estratto;
+	}
+	
+	public boolean controllaEstratto(int estratto, Tabella cartella){
+		
+		return true;
 	}
 }

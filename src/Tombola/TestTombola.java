@@ -8,7 +8,7 @@ public class TestTombola {
 		Scanner s = new Scanner(System.in);
 		Tabellone t = new Tabellone();
 		Tabella tab = new Tabella(t);
-		t.stampa();
+//		t.stampa();
 		s.nextLine();
 		
 		//---------test estrazione da tabellone ----------------

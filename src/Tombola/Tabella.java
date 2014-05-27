@@ -4,10 +4,11 @@ import java.util.Random;
 
 public class Tabella {
 	
-	public int tabella[][];
-	Random r = new Random();
+	private int tabella[][];
+	private Random r = new Random();
+	private Tabellone t;
 
-	public Tabella(Tabellone t){
+	public Tabella(){
 		t.resetta();
 		int estratto = 0;
 		tabella = new int[3][9];
