@@ -16,8 +16,9 @@ public class ConnessioneDB {
 	private static final String PATH="jdbc:derby:DBSalagiochi";
 	private static final String USER="user";
 	private static final String PWD="pass";
-	private static String DBErr_1 = "Errore nel caricamento del Database!";
-	private static String DBErr_2 = "Errore nella modifica del Database!";
+	
+	private static final int INC_CREDITI_ONLINE = 20;
+	private static final int INC_CREDITI_OFFLINE = 5;
 	
 	private ConnessioneDB() {  
           
@@ -85,11 +86,11 @@ public class ConnessioneDB {
     	}
     	try {
 			ps.close();
-			closeDB();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			ok = false;
 		}
+    	closeDB();
     	return ok;
     }
     
@@ -123,11 +124,11 @@ public class ConnessioneDB {
     	try {
     		rs.close();
 			ps.close();
-			closeDB();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-    	
+		closeDB();
     	if(utente == null)
     		throw new EccezioneUtenteNonTrovato("Utente non trovato : " + username);
     	else return utente;
@@ -148,29 +149,35 @@ public class ConnessioneDB {
     	else return false;
     }
     
-    public boolean aggiornaCrediti(int premio, String username){
+    public boolean aggiornaCrediti(int premio, int spesa, String username) throws EccezioneUtenteNonTrovato{
     	ConnessioneDB cdb = null;
     	PreparedStatement ps = null;
     	boolean ok = true;
+    	Utente utente = null;
     	
     	try{
     		cdb = ConnessioneDB.getInstance();
+    		utente = getUtente(username);
     		ps = cdb.getPStatement(StatementsDB.aggiornaCrediti);
-    		ps.setInt(1, premio);
-    		ps.setString(2, username);
+    		ps.setInt(1, utente.getCrediti()+premio-spesa);
+    		ps.setInt(1, utente.getCrediti_giornalieri()+premio-spesa);
+    		ps.setString(3, username);
     		ps.execute();
     	}catch(SQLException e){
     		e.printStackTrace();
     		ok = false;
+    	}catch(EccezioneUtenteNonTrovato e){
+    		throw new EccezioneUtenteNonTrovato("Utente non trovato : " + username);
     	}
     	
     	try {
 			ps.close();
-			closeDB();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			ok = false;
 		}
+    	closeDB();
+    	
     	return ok;
     }
     
@@ -191,11 +198,12 @@ public class ConnessioneDB {
     	
     	try {
 			ps.close();
-			closeDB();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			ok = false;
 		}
+		closeDB();
     	return ok;
     }
     
@@ -229,16 +237,99 @@ public class ConnessioneDB {
     	try {
     		rs.close();
 			st.close();
-			closeDB();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-    	
+		closeDB();
     	if(classifica == null)
     		throw new EccezioneClassificaVuota("Classifica vuota! Nessun utente registrato!");
     	else return classifica;
     }
     
+    public int getPosizioneGlobale(String username) throws EccezioneUtenteNonTrovato{
+    	ConnessioneDB cdb = null;
+    	Statement st = null;
+    	ResultSet rs = null;
+    	int posizione = 0;
+    	boolean ok = false;
+    	
+    	try{
+    		cdb = ConnessioneDB.getInstance();
+    		st = cdb.getStatement();
+    		rs = st.executeQuery(StatementsDB.getClassifica);
+    		
+    	}catch(SQLException e){
+    		e.printStackTrace();
+    	}
+    	
+    	try{
+			for(posizione = 1; rs.next() || rs.getString("userid").equalsIgnoreCase(username); posizione ++)
+				if(rs.getString("userid").equals(username)) ok = true;
+				
+    	}catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	
+    	try {
+    		rs.close();
+			st.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		closeDB();
+		
+    	if(!ok)
+    		throw new EccezioneUtenteNonTrovato("Utente non trovato : " + username);
+    	else return posizione;
+    }
+    
+    public boolean aggiornaCrediti(ArrayList<Utente> utentiOnline) throws EccezioneClassificaVuota{
+    	ConnessioneDB cdb = null;
+    	PreparedStatement ps = null;
+    	ArrayList<Utente> utentiDB = null;
+    	boolean[] isOnline = null;
+    	boolean ok = true;
+    			
+    	try{
+    		cdb = ConnessioneDB.getInstance();
+    		utentiDB = getClassifica(false);
+    		isOnline = new boolean[utentiDB.size()];
+        	for(int i = 0;i < utentiDB.size(); i++){
+        		isOnline[i] = false;
+        		for(int j = 0; j < utentiOnline.size(); j++)
+        			if(utentiDB.get(i).getUsername().equals(utentiDB.get(j).getUsername()))
+        				isOnline[i] = true;
+        	}
+        	
+        	ps = cdb.getPStatement(StatementsDB.aggiornaCreditiPeriodico);
+        	for(int i = 0; i < utentiDB.size(); i++){
+        		ps.setString(2, utentiDB.get(i).getUsername());
+        		if(isOnline[i])
+        			ps.setInt(1, utentiDB.get(i).getCrediti()+INC_CREDITI_ONLINE);
+        		else
+        			ps.setInt(1, utentiDB.get(i).getCrediti()+INC_CREDITI_OFFLINE);
+        		ps.execute();
+        	}
+    	}catch(EccezioneClassificaVuota e){
+    		ok = false;
+    		throw new EccezioneClassificaVuota("Classifica vuota! Nessun utente registrato!");
+    	}catch (SQLException e) {
+			e.printStackTrace();
+			ok = false;
+		}
+    	
+    	try {
+			ps.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			ok = false;
+		}
+		closeDB();
+		
+    	return ok;
+    }
 }
 
 

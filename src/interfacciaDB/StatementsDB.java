@@ -7,6 +7,11 @@ public class StatementsDB {
 			+ "SET crediti = ?, crediti_giornalieri = ?"
 			+ "WHERE userid = ?";
 	
+	static String aggiornaCreditiPeriodico = // OK
+			"UPDATE utenti"
+			+ "SET crediti = ?"
+			+ "WHERE userid = ?";
+	
 	static String resetCreditiGiornalieri = // OK
 			"UPDATE utenti"
 			+ "SET crediti_giornalieri = 0"
@@ -27,7 +32,7 @@ public class StatementsDB {
 			+ "ORDER BY crediti DESC";
 	
 	static String getClassificaGiornaliera = // OK
-			"SELECT userid, crediti_giornalieri"
+			"SELECT userid, nome, cognome, crediti_giornalieri"
 			+ "FROM utenti"
 			+ "ORDER BY crediti_giornalieri DESC";
 	
