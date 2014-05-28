@@ -94,7 +94,7 @@ public class ConnessioneDB {
     	return ok;
     }
     
-    private Utente getUtente(String username) throws EccezioneUtenteNonTrovato{
+    public Utente getUtente(String username) throws EccezioneUtenteNonTrovato{
     	ConnessioneDB cdb = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
