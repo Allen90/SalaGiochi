@@ -9,13 +9,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 
+import start.UtentiLoggati;
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
 import model.Utente;
 
 public class ConnessioneDB {
 
-	private static Connection con = null;  
+	private static Connection con = null;
+	private static UtentiLoggati loggati = null;
     private static ConnessioneDB dbc = null;
     private static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
 	private static final String PATH="jdbc:derby:DBSalagiochi";
@@ -297,7 +299,8 @@ public class ConnessioneDB {
     	else return posizione;
     }
     
-    public boolean aggiornaCrediti(ArrayList<Utente> utentiOnline) throws EccezioneClassificaVuota{
+    public boolean aggiornaPeriodico() throws EccezioneClassificaVuota{
+    	loggati = UtentiLoggati.getIstance();
     	ConnessioneDB cdb = null;
     	PreparedStatement ps = null;
     	ArrayList<Utente> utentiDB = null;
@@ -310,8 +313,8 @@ public class ConnessioneDB {
     		isOnline = new boolean[utentiDB.size()];
         	for(int i = 0;i < utentiDB.size(); i++){
         		isOnline[i] = false;
-        		for(int j = 0; j < utentiOnline.size(); j++)
-        			if(utentiDB.get(i).getUsername().equals(utentiDB.get(j).getUsername()))
+        		for(int j = 0; j < loggati.getLoggati().size(); j++)
+        			if(loggati.presente(utentiDB.get(i).getUsername()))
         				isOnline[i] = true;
         	}
         	
@@ -410,19 +413,6 @@ public class ConnessioneDB {
 		else return new Date(dataAttualeSQL);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
