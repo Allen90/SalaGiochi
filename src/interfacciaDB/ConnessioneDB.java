@@ -1,11 +1,16 @@
 package interfacciaDB;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
-import eccezioni.EccezioneUtenteNonTrovato;
 import model.Utente;
 
 public class ConnessioneDB {
@@ -94,7 +99,7 @@ public class ConnessioneDB {
     	return ok;
     }
     
-    public Utente getUtente(String username) throws EccezioneUtenteNonTrovato{
+    public Utente getUtente(String username) throws EccezioneUtente{
     	ConnessioneDB cdb = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
@@ -130,7 +135,7 @@ public class ConnessioneDB {
 		}
 		closeDB();
     	if(utente == null)
-    		throw new EccezioneUtenteNonTrovato("Utente non trovato : " + username);
+    		throw new EccezioneUtente("Utente non trovato : " + username);
     	else return utente;
     }
     
@@ -139,7 +144,7 @@ public class ConnessioneDB {
     	
     	try{
     		utente = getUtente(username);
-    	}catch(EccezioneUtenteNonTrovato e){
+    	}catch(EccezioneUtente e){
     		e.printStackTrace();
     		return false;
     	}
@@ -149,7 +154,7 @@ public class ConnessioneDB {
     	else return false;
     }
     
-    public boolean aggiornaCrediti(int premio, int spesa, String username) throws EccezioneUtenteNonTrovato{
+    public boolean aggiornaCrediti(int premio, int spesa, String username) throws EccezioneUtente{
     	ConnessioneDB cdb = null;
     	PreparedStatement ps = null;
     	boolean ok = true;
@@ -166,8 +171,8 @@ public class ConnessioneDB {
     	}catch(SQLException e){
     		e.printStackTrace();
     		ok = false;
-    	}catch(EccezioneUtenteNonTrovato e){
-    		throw new EccezioneUtenteNonTrovato("Utente non trovato : " + username);
+    	}catch(EccezioneUtente e){
+    		throw new EccezioneUtente("Utente non trovato : " + username);
     	}
     	
     	try {
@@ -247,7 +252,7 @@ public class ConnessioneDB {
     	else return classifica;
     }
     
-    public int getPosizioneGlobale(String username) throws EccezioneUtenteNonTrovato{
+    public int getPosizioneGlobale(String username) throws EccezioneUtente{
     	ConnessioneDB cdb = null;
     	Statement st = null;
     	ResultSet rs = null;
@@ -281,7 +286,7 @@ public class ConnessioneDB {
 		closeDB();
 		
     	if(!ok)
-    		throw new EccezioneUtenteNonTrovato("Utente non trovato : " + username);
+    		throw new EccezioneUtente("Utente non trovato : " + username);
     	else return posizione;
     }
     
@@ -329,6 +334,73 @@ public class ConnessioneDB {
 		closeDB();
 		
     	return ok;
+    }
+    
+    public boolean aggiornaUltimoLogin(String username){
+    	ConnessioneDB cdb = null;
+    	PreparedStatement ps = null;
+    	boolean ok = true;
+    	
+    	long dataAttualeLong = new Date().getTime();
+    	java.sql.Date dataAttuale = new java.sql.Date(dataAttualeLong);
+    	
+    	try{
+    		cdb = ConnessioneDB.getInstance();
+    		ps = cdb.getPStatement(StatementsDB.setUltimoLogin);
+    		ps.setDate(1, dataAttuale);
+    		ps.setString(2, username);
+    		ps.execute();
+    	}catch(SQLException e){
+    		e.printStackTrace();
+    		ok = false;
+    	}
+    	
+    	try {
+			ps.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			ok = false;
+		}
+		closeDB();
+    	return ok;
+    }
+    
+    public Date getUltimoLogin(String username) throws EccezioneUtente{
+    	ConnessioneDB cdb = null;
+    	PreparedStatement ps = null;
+    	ResultSet rs = null;
+    	Long dataAttualeSQL = null;
+    	
+    	try{
+    		cdb = ConnessioneDB.getInstance();
+    		ps = cdb.getPStatement(StatementsDB.getUltimoLogin);
+    		ps.setString(1, username);
+    		rs = ps.executeQuery();
+    	}catch(SQLException e){
+    		e.printStackTrace();
+    	}
+    	
+    	try {
+			while(rs.next()){
+				dataAttualeSQL = rs.getDate("ultimo_login").getTime(); 
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+    	
+    	try {
+    		rs.close();
+			ps.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		closeDB();
+		
+		if(dataAttualeSQL == null)
+			throw new EccezioneUtente("Utente non trovato : " + username);
+		else return new Date(dataAttualeSQL);
     }
 }
 
