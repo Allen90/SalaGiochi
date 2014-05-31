@@ -10,13 +10,18 @@ public class Slot {
 		j = Jackpot.getInstance();
 	}
 	
-	public String calcolaCombinazione(){		
+	public String calcolaCombinazioneToString(){		
 		int[] combinazione = c.calcola();
 		String output = null; 
 		
 		for(int i = 0; i < 3; i++)
 			output += combinazione[i]+"#";
 		return output;		
+	}
+	
+	public int[] calcolaCombinazione(){		
+		int[] combinazione = c.calcola();
+		return combinazione;		
 	}
 	
 	public int getPremio(boolean reset){
