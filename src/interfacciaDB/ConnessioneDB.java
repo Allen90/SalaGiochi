@@ -77,17 +77,23 @@ public class ConnessioneDB {
     	ConnessioneDB cdb = null;
     	PreparedStatement ps = null;
     	boolean ok = true;
+    	
     	try{
-    		cdb = ConnessioneDB.getInstance();
-    		ps = cdb.getPStatement(StatementsDB.aggiungiUtente);
-    		ps.setString(1, utente.getUsername());
-    		ps.setString(2, utente.getPassword());
-    		ps.setString(3, utente.getNome());
-    		ps.setString(4, utente.getCognome());
-    		ps.execute();
-    	}catch(SQLException e){
-    		e.printStackTrace();
+    		getUtente(utente.getUsername());
     		ok = false;
+    	}catch(EccezioneUtente eu){
+    		try{
+        		cdb = ConnessioneDB.getInstance();
+        		ps = cdb.getPStatement(StatementsDB.aggiungiUtente);
+        		ps.setString(1, utente.getUsername());
+        		ps.setString(2, utente.getPassword());
+        		ps.setString(3, utente.getNome());
+        		ps.setString(4, utente.getCognome());
+        		ps.execute();
+        	}catch(SQLException e){
+        		e.printStackTrace();
+        		ok = false;
+        	}
     	}
     	try {
 			ps.close();
@@ -96,6 +102,7 @@ public class ConnessioneDB {
 			ok = false;
 		}
     	closeDB();
+    	
     	return ok;
     }
     
@@ -139,19 +146,19 @@ public class ConnessioneDB {
     	else return utente;
     }
     
-    public boolean controlloUtente(String username, String password){
+    public int controlloUtente(String username, String password){
     	Utente utente = null;
     	
     	try{
     		utente = getUtente(username);
     	}catch(EccezioneUtente e){
     		e.printStackTrace();
-    		return false;
+    		return 1;
     	}
     	
     	if(utente.getPassword().equals(password))
-    		return true;
-    	else return false;
+    		return 0;
+    	else return 2;
     }
     
     public boolean aggiornaCrediti(int premio, int spesa, String username) throws EccezioneUtente{
