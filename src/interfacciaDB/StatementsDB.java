@@ -36,12 +36,12 @@ public class StatementsDB {
 			+ "FROM utenti"
 			+ "ORDER BY crediti_giornalieri DESC";
 	
-	static String getUltimoLogin = 
+	static String getUltimoLogin = //TODO
 			"SELECT ultimo_login"
 			+ "FROM utenti"
 			+ "WHERE userid = ?";
 	
-	static String setUltimoLogin = 
+	static String setUltimoLogin = //TODO
 			"UPDATE utenti"
 			+ "SET ultimo_login = ?"
 			+ "WHERE userid = ?";

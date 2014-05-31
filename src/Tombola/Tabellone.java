@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Tabellone { 
 	
-	private int numeri[][] = new int[9][10];
+	private Casella numeri[][] = new Casella[9][10];
 	Random estrattore = new Random();
 	int estratti = 0;
 
@@ -18,10 +18,14 @@ public class Tabellone {
 		estratti = 0;
 	}
 	
+	public Casella[][] getTabellone(){
+		return numeri;
+	}
+	
 	private void riempi(){
 		for(int i=0;i<9;i++)
 			for(int j=0;j<10;j++)
-				numeri[i][j] = i*10+j+1;
+				numeri[i][j].setNumero(i*10+j+1);
 	}
 	
 	public int estrai(){
@@ -31,8 +35,8 @@ public class Tabellone {
 			estratto = estrattore.nextInt(90)+1;
 			unita = estratto%10;
 			decine = (estratto - unita)/10;
-		}while(numeri[decine][unita-1] == 0);
-		numeri[decine][unita-1] = 0;
+		}while(numeri[decine][unita-1].isEstratto());
+		numeri[decine][unita-1].setEstratto(true);;
 		estratti ++;
 		return estratto;
 	}	
@@ -56,14 +60,13 @@ public class Tabellone {
 		int unita = 0;
 		do{
 			unita = estrattore.nextInt(10);
-			estratto = numeri[decina][unita];
-		}while(numeri[decina][unita] == 0);
-		numeri[decina][unita] = 0;
+			estratto = numeri[decina][unita].getNumero();
+		}while(numeri[decina][unita].isEstratto());
+		numeri[decina][unita].setEstratto(true);;
 		return estratto;
 	}
 	
-	public boolean controllaEstratto(int estratto, Tabella cartella){
-		
-		return true;
-	}
+	
+
+	
 }

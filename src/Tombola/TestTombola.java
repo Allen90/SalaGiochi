@@ -7,7 +7,7 @@ public class TestTombola {
 	public static void main(String[] args) {
 		Scanner s = new Scanner(System.in);
 		Tabellone t = new Tabellone();
-		Tabella tab = new Tabella(t);
+		Tabella tab = new Tabella();
 //		t.stampa();
 		s.nextLine();
 		
