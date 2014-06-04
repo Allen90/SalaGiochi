@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import model.Client;
 import model.Utente;
 public class LobbyRubaMazzo {
-	private ArrayList<Client> client;
+	private ArrayList<Utente> client;
 	private static LobbyRubaMazzo l;
 	
 	private LobbyRubaMazzo(){
-		client = new ArrayList<Client>();
+		client = new ArrayList<Utente>();
 	}
 	
 	public static LobbyRubaMazzo getInstance(){
@@ -17,7 +17,7 @@ public class LobbyRubaMazzo {
 		return l;
 	}
 	
-	public ArrayList<Client> getLobbyRubaMazzo(){
+	public ArrayList<Utente> getLobbyRubaMazzo(){
 		return client;
 	}
 	
@@ -26,7 +26,7 @@ public class LobbyRubaMazzo {
 			client.remove(i);
 	}
 	
-	public void addUserLobbyRubaMazzo(Client c){
+	public void addUserLobbyRubaMazzo(Utente c){
 		client.add(c);
 	}
 }

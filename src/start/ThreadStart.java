@@ -1,15 +1,23 @@
 package start;
 
 import java.net.ServerSocket;
+import java.rmi.RemoteException;
 
 import rmi.RmiServerImp;
+import socket.SocketServer;
 
 public class ThreadStart implements Runnable{
 	
 	@Override
 	public void run() {
-		ServerSocket ssocket = new ServerSocket();
-		RmiServerImp srmi = new RmiServerImp();
+		SocketServer ssocket = new SocketServer();
+		RmiServerImp srmi = null;
+		try {
+			srmi = new RmiServerImp();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		AggiornaCrediti ag = new AggiornaCrediti();
 		Thread t1,t2,t3;
 		t1 = new Thread(ssocket);

@@ -10,9 +10,14 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import codePartite.LobbyRubaMazzo;
+import codePartite.LobbyTombola;
+import Tombola.Tabella;
 import eccezioni.EccezioneClassificaVuota;
+import eccezioni.EccezioneUtente;
 import slotMachine.Slot;
 import model.Client;
+import model.GiocatoreTombola;
 import model.Utente;
 
 public class SocketTaskControl implements Runnable{
@@ -21,14 +26,19 @@ public class SocketTaskControl implements Runnable{
 	private BufferedReader reader = null;
 	private ConnessioneDB db;
 	private Utente u;
+	private boolean continua;
+	private GiocatoreTombola gt;
+	private LobbyTombola lt;
+	private LobbyRubaMazzo lrm;
 	public SocketTaskControl(Socket client){
 		this.client = client;
 		db = ConnessioneDB.getInstance();
-
+		lt = LobbyTombola.getIstance();
+		lrm = LobbyRubaMazzo.getInstance();
+		continua = true;
 	}
 	@Override
 	public void run(){
-		Boolean continua = true;
 		while(continua){
 			try {
 				reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -78,8 +88,19 @@ public class SocketTaskControl implements Runnable{
 				case "AGGTAV":{
 					break;
 				}
+				case "TERMINA":{
+					termina();
+					break;
 				}
-			} catch (IOException | InterruptedException e) {
+				case "GIOCOTOMBOLA":{
+					int numCartella = Integer.parseInt(reader.readLine());
+					giocoTombola(numCartella);
+				}
+				case "GIOCORUBAMAZZO":{
+					giocoRubaMazzo();
+				}
+				}
+			} catch (IOException | InterruptedException | EccezioneUtente | EccezioneClassificaVuota e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -87,14 +108,39 @@ public class SocketTaskControl implements Runnable{
 
 
 	}
+	
+	public void giocoRubaMazzo(){
+		lrm.addUserLobbyRubaMazzo(u);
+	}
+	
+	public void giocoTombola(int numCartelle){
+		ArrayList<Tabella> cartelle = new ArrayList<Tabella>();
+		for(int i = 0; i< numCartelle;i++){
+			Tabella c = new Tabella();
+			cartelle.add(c);
+		}
+			
+		gt = new GiocatoreTombola(cartelle,u);
+		lt.addUserLobbyTomb(gt);
+	}
+	
+	public void termina(){
+		continua = false;
+	}
 
-	public void login(String username,String password){
+	public void login(String username,String password) throws EccezioneClassificaVuota, EccezioneUtente{
 		int controllo = db.controlloUtente(username,password);
 
 		switch(controllo){
 		case 0:{
+			
 			Utente u = db.getUtente(username);
-			writer.println("OK#"+client.getNome()+"#"+client.getCognome()+"#"+client.getCrediti()+"#"+client.GetUltimoLogin()+"#"+client.GetPosizionelassificaGlobale());
+			int posizione = 0;
+			ArrayList<Utente> classifica = db.getClassifica(false);
+			for(int i=0; i<classifica.size();i++)
+				if(classifica.get(i).getUsername().equals(username))
+					posizione = i;
+			writer.println("OK#"+u.getNome()+"#"+u.getCognome()+"#"+u.getCrediti()+"#"+u.getUltimaVisita()+"#"+posizione);
 			break;
 		}
 		case 1:{
@@ -108,24 +154,26 @@ public class SocketTaskControl implements Runnable{
 	}
 
 	public void registra(String username,String password,String passwordConf,String nome,String cognome){
-		if(db.getUtente(u.getUsername()) == null && password.equals(passwordConf)){
-			Utente u = new Utente(nome,cognome,username,password,0);
-			Boolean ok = db.addUtente(u);
-			if(ok)
-				writer.println("OK");
-			else writer.println("OK#servererr");
+		try {
+			if(db.getUtente(u.getUsername()) == null && password.equals(passwordConf)){
+				Utente u = new Utente(nome,cognome,username,password,0);
+				Boolean ok = db.addUtente(u);
+				if(ok)
+					writer.println("OK");
+				else writer.println("OK#servererr");
+			}
+		} catch (EccezioneUtente e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		else if(db.getUtente(username) != null)
-			writer.println("KO#userdoppio");
-		else writer.println("KO#passwerr");
 	}
 
-	public void rolla(){
+	public void rolla() throws EccezioneUtente{
 		if(db.getUtente(u.getUsername()).getCrediti() < 1)
 			writer.println("KO#NOCREDITI#"+db.getUtente(u.getUsername()).getCrediti());
 		else {
 			Slot s = new Slot();
-			String comb = s.calcolaCombinazione();
+			String comb = s.calcolaCombinazioneToString();
 			String premios = s.getStringaPremio();
 			int premio = s.getPremio(true);
 			db.aggiornaCrediti(premio,1,u.getUsername());

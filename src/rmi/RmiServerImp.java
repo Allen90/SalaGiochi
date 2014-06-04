@@ -7,6 +7,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+import eccezioni.EccezioneUtente;
 import start.UtentiLoggati;
 import model.Client;
 import model.ClientRMI;
@@ -73,35 +74,40 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 
 			serverThread = new Thread(server);
 			serverThread.start();
-			return server;
+			
 			synchronized (lock) {
 				//Aggiungo il client ai client connessi
-				l.addLoggato(user);			
+				l.addLoggato(user.getUsername());			
 			}
+			return server;
 		}
 		case 1:
 		case 2: return null;
 		}
-
+		return null;
 
 
 
 
 	}
 
-	public RmiTaskControl registra(UtenteReg u){
+	public RmiTaskControl registra(ClientRMI c,UtenteReg nuovo) throws EccezioneUtente, RemoteException{
 		RmiTaskControlImp server = null;
-		if (u.getPassword().equals(u.getPasswordConf()))
-			if(db.controlloUtente(u.getUsername(),u.getPassword()) == 1){
-				Utente u = new Utente(u.getNome(),u.getCognome(),u.getUsername(),u.getPassword(),0);
+		if (nuovo.getPassword().equals(nuovo.getPasswordConf()))
+			if(db.controlloUtente(nuovo.getUsername(),nuovo.getPassword()) == 1){
+				Utente u = new Utente(nuovo.getNome(),nuovo.getCognome(),nuovo.getUsername(),nuovo.getPassword(),0);
 				synchronized (lock) {
 					//Aggiungo il client ai client connessi
-					l.addLoggato(u);
+					l.addLoggato(u.getUsername());
 				}
+
+				server = new RmiTaskControlImp(u);
 				serverThread = new Thread(server);
 				serverThread.start();
+				return server;
 			}
-
+		return null;
 	}
+
 }
 

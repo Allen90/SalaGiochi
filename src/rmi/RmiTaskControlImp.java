@@ -1,25 +1,36 @@
 package rmi;
 
+import interfacciaDB.ConnessioneDB;
+
+import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
+import codePartite.LobbyRubaMazzo;
+import codePartite.LobbyTombola;
+import Tombola.Tabella;
+import eccezioni.EccezioneUtente;
+import rubamazzo.Tavolo;
 import slotMachine.Slot;
-import Tombola.GiocatoreTombola;
+import model.GiocatoreTombola;
 import model.RmiServer;
 import model.RmiTaskControl;
 import model.Rollata;
-import model.Tabelllone;
-import model.Tavolo;
-import model.Utent;
 import model.Utente;
 
 public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskControl,Runnable{
 	private Utente utente;
 	private Boolean continua;
 	private GiocatoreTombola gt;
-	public RmiTaskControlImp(Utente utente){
+	private ConnessioneDB db;
+	private LobbyTombola lt;
+	private LobbyRubaMazzo lrb;
+	public RmiTaskControlImp(Utente utente) throws RemoteException{
 		this.utente = utente;
 		continua = true;
+		db = ConnessioneDB.getInstance();
+		lt = LobbyTombola.getIstance();
+		lrb = LobbyRubaMazzo.getInstance();
 	}
 	
 	@Override
@@ -30,6 +41,22 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 		
 	}
 	
+	public void giocoTombola(int numCartelle){
+		ArrayList<Tabella> cartelle = new ArrayList<Tabella>();
+		for(int i = 0; i< numCartelle;i++){
+			Tabella c = new Tabella();
+			cartelle.add(c);
+		}
+			
+		gt = new GiocatoreTombola(cartelle,utente);
+		lt.addUserLobbyTomb(gt);
+	}
+	
+	
+	public void giocoRubaMazzo(){
+		lrb.addUserLobbyRubaMazzo(utente);
+	}
+	
 	public void termina(){
 		continua = false;
 	}
@@ -38,21 +65,25 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 	public Rollata rolla() {
 		Rollata r = new Rollata();
 		
-		if(db.getUtente(utente.getUsername()).getCrediti() < 1)
+		try {
+			if(db.getUtente(utente.getUsername()).getCrediti() > 1) {
+
+				Slot s = new Slot();
+				int[] comb = s.calcolaCombinazione();
+				int premio = s.getPremio(true);
+				db.aggiornaCrediti(premio,1,utente.getUsername());
+				
+				r.setComb(comb);
+				r.setPremio(premio);
+				r.setCrediti(utente.getCrediti());
+				
+			}
+		} catch (EccezioneUtente e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			return null;
-		else {
-			
-			Slot s = new Slot();
-			int[] comb = s.calcolaCombinazione();
-			int premio = s.getPremio(true);
-			db.aggiornaCrediti(premio,1,utente.getUsername());
-			
-			r.setComb(comb);
-			r.setPremio(premio);
-			r.setCrediti(utente.getCrediti());
-			return r;
 		}
-		
+		return r;
 	}
 
 	@Override

@@ -3,33 +3,33 @@ package codePartite;
 import java.util.ArrayList;
 
 import model.Client;
+import model.GiocatoreTombola;
 import model.Utente;
 
 public class LobbyTombola {
 	private static LobbyTombola l;
-	private ArrayList<Client> client;
+	private ArrayList<GiocatoreTombola> giocatori;
 	private LobbyTombola(){
-		client = new ArrayList<Client>();
+		giocatori = new ArrayList<GiocatoreTombola>();
 	}
 	
-	public LobbyTombola getIstance(){
+	public static LobbyTombola getIstance(){
 		if(l == null)
 			l = new LobbyTombola();
 		return l;
 	}
 	
 	public int numUtentiTombola(){
-		return client.size();
+		return giocatori.size();
 	}
 	
 	public void svuotaLobbyTombola(){
-		for(int i = 0;i < client.size();i++)
-			client.remove(i);
+		for(int i = 0;i < giocatori.size();i++)
+			giocatori.remove(i);
 	}
 	
-	public void addUserLobbyTomb(Client c,int i){
-		GiocatoreTombola g = new GiocatoreTombola(c,i);
-		lobbyTombola.add(g);
+	public void addUserLobbyTomb(GiocatoreTombola g){
+		giocatori.add(g);
 	}
 	
 }
