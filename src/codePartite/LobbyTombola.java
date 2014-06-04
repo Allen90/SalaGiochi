@@ -2,8 +2,8 @@ package codePartite;
 
 import java.util.ArrayList;
 
+import tombola.GiocatoreTombola;
 import model.Client;
-import model.GiocatoreTombola;
 import model.Utente;
 
 public class LobbyTombola {

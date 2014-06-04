@@ -2,16 +2,18 @@ package partite;
 
 import java.util.ArrayList;
 
-import model.GiocatoreTombola;
-import Tombola.Tabella;
-import Tombola.Tabellone;
+import tombola.GiocatoreTombola;
+import tombola.Tabella;
+import tombola.Tabellone;
 
-public class partitaTombola implements Runnable{
+
+
+public class PartitaTombola implements Runnable{
 
 	ArrayList<GiocatoreTombola> giocatori = null;
 	Tabellone tabellone = null;
 
-	public partitaTombola(ArrayList<GiocatoreTombola> giocatori){
+	public PartitaTombola(ArrayList<GiocatoreTombola> giocatori){
 		tabellone = new Tabellone();
 		this.giocatori = giocatori;
 		for(GiocatoreTombola giocatore: giocatori)

@@ -8,14 +8,14 @@ import java.util.ArrayList;
 
 import codePartite.LobbyRubaMazzo;
 import codePartite.LobbyTombola;
-import Tombola.Tabella;
 import eccezioni.EccezioneUtente;
-import rubamazzo.Tavolo;
+import rubamazzo.TavoloRubamazzo;
+import slot.Rollata;
 import slotMachine.Slot;
-import model.GiocatoreTombola;
+import tombola.GiocatoreTombola;
+import tombola.Tabella;
 import model.RmiServer;
 import model.RmiTaskControl;
-import model.Rollata;
 import model.Utente;
 
 public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskControl,Runnable{
@@ -93,7 +93,7 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 	}
 
 	@Override
-	public Tavolo aggRubaMazzo() {
+	public TavoloRubamazzo aggRubaMazzo() {
 		// TODO Auto-generated method stub
 		return null;
 	}

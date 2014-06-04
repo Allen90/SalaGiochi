@@ -12,12 +12,12 @@ import java.util.StringTokenizer;
 
 import codePartite.LobbyRubaMazzo;
 import codePartite.LobbyTombola;
-import Tombola.Tabella;
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
 import slotMachine.Slot;
+import tombola.GiocatoreTombola;
+import tombola.Tabella;
 import model.Client;
-import model.GiocatoreTombola;
 import model.Utente;
 
 public class SocketTaskControl implements Runnable{

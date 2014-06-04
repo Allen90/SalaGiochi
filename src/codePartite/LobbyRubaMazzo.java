@@ -17,6 +17,10 @@ public class LobbyRubaMazzo {
 		return l;
 	}
 	
+	public int numUtentiLobby(){
+		return client.size();
+	}
+	
 	public ArrayList<Utente> getLobbyRubaMazzo(){
 		return client;
 	}
