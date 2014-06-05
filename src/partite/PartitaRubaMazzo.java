@@ -11,8 +11,10 @@ public class PartitaRubaMazzo implements Runnable{
 	private ArrayList<Utente> utenti;
 	private TavoloRubamazzo trm;
 	private ArrayList<GiocatoreRubamazzo> giocatori;
-	
-	public PartitaRubaMazzo(ArrayList<Utente> utenti){
+	private int numPartita;
+	private boolean mossaFinita;
+	public PartitaRubaMazzo(ArrayList<Utente> utenti,int numPartita){
+		this.numPartita = numPartita;
 		this.giocatori = giocatori;
 		for(int i = 0; i< giocatori.size();i++){
 			GiocatoreRubamazzo u = new GiocatoreRubamazzo(utenti.get(i));
@@ -20,14 +22,41 @@ public class PartitaRubaMazzo implements Runnable{
 		}
 		trm = new TavoloRubamazzo(giocatori);
 		iprm = InfoPartitaRubaMazzo.getInstance();
+		
 		for(int i=0;i<giocatori.size();i++){
-			SituazioneRubamazzo s = new SituazioneRubamazzo(giocatori.get(i));
+			SituazioneRubamazzo s = new SituazioneRubamazzo(giocatori.get(i),numPartita);
+			if( i == 0)
+				s.setAbilitato(true);
 			iprm.addUtente(s);
 		}
+
 	}
+	
+	
+	
+	public ArrayList<GiocatoreRubamazzo> getGiocatori(){
+		return giocatori;
+	}
+ 	
+	public TavoloRubamazzo getTavolo(){
+		return trm;
+	}
+	
+	public void setMossaFinita(boolean finita){
+		mossaFinita = finita;
+	}
+	
+	public boolean mossaFinita()
+	{
+		return mossaFinita;
+	}
+	
 	public void run() {
 		
 		while(!trm.isFinito()){
+			while(!mossaFinita()){
+				
+			}
 			
 		}
 		
