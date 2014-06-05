@@ -12,12 +12,17 @@ public class PartitaTombola implements Runnable{
 
 	ArrayList<GiocatoreTombola> giocatori = null;
 	Tabellone tabellone = null;
-
+	InfoPartitaTombola ipt;
+	
 	public PartitaTombola(ArrayList<GiocatoreTombola> giocatori){
 		tabellone = new Tabellone();
 		this.giocatori = giocatori;
-		for(GiocatoreTombola giocatore: giocatori)
-			giocatore.aggiornaTabellone(tabellone);
+		ipt = InfoPartitaTombola.getInstance();
+		
+		for(int i = 0; i< giocatori.size();i++){
+			SituazioneTombola s = new SituazioneTombola(tabellone,giocatori.get(i));
+			ipt.addUtente(s);
+		}
 	}
 
 	@Override
@@ -32,10 +37,10 @@ public class PartitaTombola implements Runnable{
 			}
 			int estratto = tabellone.estrai();
 			for(int i=0;i<giocatori.size();i++){
-				ArrayList<Tabella> t = giocatori.get(i).getCartelle();
-				for(int j=0;j<t.size();j++)
-					t.get(i).setEstratto(estratto);
+				for(int j=0;j<giocatori.getNCartelle();j++)
+					giocatori.get(i).controllaEstratto(estratto,j);
 			}
+			
 			
 		}
 		
