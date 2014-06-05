@@ -19,8 +19,12 @@ public class LobbyTombola {
 		return l;
 	}
 	
-	public int numUtentiTombola(){
+	public int numUtentiLobby(){
 		return giocatori.size();
+	}
+	
+	public ArrayList<GiocatoreTombola> getUtenti(){
+		return giocatori;
 	}
 	
 	public void svuotaLobbyTombola(){
