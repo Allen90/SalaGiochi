@@ -6,13 +6,17 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-import codePartite.LobbyRubaMazzo;
-import codePartite.LobbyTombola;
+import partite.InfoPartitaRubaMazzo;
+import partite.InfoPartitaTombola;
 import eccezioni.EccezioneUtente;
+import rubamazzo.SituazioneRubamazzo;
 import rubamazzo.TavoloRubamazzo;
 import slot.Rollata;
-import slotMachine.Slot;
+import slot.Slot;
+import threadCode.ThreadLobbyRubaMazzo;
+import threadCode.ThreadLobbyTombola;
 import tombola.GiocatoreTombola;
+import tombola.SituazioneTombola;
 import tombola.Tabella;
 import model.RmiServer;
 import model.RmiTaskControl;
@@ -23,14 +27,21 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 	private Boolean continua;
 	private GiocatoreTombola gt;
 	private ConnessioneDB db;
-	private LobbyTombola lt;
-	private LobbyRubaMazzo lrb;
+	private ThreadLobbyTombola lt;
+	private ThreadLobbyRubaMazzo lrb;
+	private Slot s;
+	private InfoPartitaTombola ipt;
+	private InfoPartitaRubaMazzo iprm;
+	
+	
 	public RmiTaskControlImp(Utente utente) throws RemoteException{
 		this.utente = utente;
 		continua = true;
 		db = ConnessioneDB.getInstance();
-		lt = LobbyTombola.getIstance();
-		lrb = LobbyRubaMazzo.getInstance();
+		lt = ThreadLobbyTombola.getIstance();
+		lrb = ThreadLobbyRubaMazzo.getInstance();
+		ipt = InfoPartitaTombola.getInstance();
+		iprm = InfoPartitaRubaMazzo.getInstance();
 	}
 	
 	@Override
@@ -52,9 +63,19 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 		lt.addUserLobbyTomb(gt);
 	}
 	
+	public SituazioneTombola aggTombola(){
+		SituazioneTombola sit = ipt.getUtente(utente.getUsername());
+		return sit;
+	}
 	
 	public void giocoRubaMazzo(){
 		lrb.addUserLobbyRubaMazzo(utente);
+				
+	}
+	
+	public SituazioneRubamazzo aggRubaMazzo(){
+		SituazioneRubamazzo sit = iprm.getUtente(utente.getUsername());
+		return sit;
 	}
 	
 	public void termina(){
@@ -68,7 +89,7 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 		try {
 			if(db.getUtente(utente.getUsername()).getCrediti() > 1) {
 
-				Slot s = new Slot();
+				s = new Slot();
 				int[] comb = s.calcolaCombinazione();
 				int premio = s.getPremio(true);
 				db.aggiornaCrediti(premio,1,utente.getUsername());
@@ -84,18 +105,6 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 			return null;
 		}
 		return r;
-	}
-
-	@Override
-	public GiocatoreTombola aggTombola() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public TavoloRubamazzo aggRubaMazzo() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public ArrayList<Utente> aggClass() {

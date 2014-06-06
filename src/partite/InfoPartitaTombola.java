@@ -1,5 +1,7 @@
 package partite;
 import java.util.*;
+
+import tombola.SituazioneTombola;
 public class InfoPartitaTombola {
 	
 	private static InfoPartitaTombola ipt;

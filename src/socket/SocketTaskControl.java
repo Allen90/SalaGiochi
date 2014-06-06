@@ -10,11 +10,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import codePartite.LobbyRubaMazzo;
-import codePartite.LobbyTombola;
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
-import slotMachine.Slot;
+import slot.Slot;
+import threadCode.ThreadLobbyRubaMazzo;
+import threadCode.ThreadLobbyTombola;
 import tombola.GiocatoreTombola;
 import tombola.Tabella;
 import model.Client;
@@ -28,13 +28,15 @@ public class SocketTaskControl implements Runnable{
 	private Utente u;
 	private boolean continua;
 	private GiocatoreTombola gt;
-	private LobbyTombola lt;
-	private LobbyRubaMazzo lrm;
+	private ThreadLobbyRubaMazzo lrm;
+	private ThreadLobbyTombola lt;
+	private Slot s;
+
 	public SocketTaskControl(Socket client){
 		this.client = client;
 		db = ConnessioneDB.getInstance();
-		lt = LobbyTombola.getIstance();
-		lrm = LobbyRubaMazzo.getInstance();
+		lt = ThreadLobbyTombola.getIstance();
+		lrm = ThreadLobbyRubaMazzo.getInstance();
 		continua = true;
 	}
 	@Override
@@ -172,7 +174,7 @@ public class SocketTaskControl implements Runnable{
 		if(db.getUtente(u.getUsername()).getCrediti() < 1)
 			writer.println("KO#NOCREDITI#"+db.getUtente(u.getUsername()).getCrediti());
 		else {
-			Slot s = new Slot();
+			s = new Slot();
 			String comb = s.calcolaCombinazioneToString();
 			String premios = s.getStringaPremio();
 			int premio = s.getPremio(true);

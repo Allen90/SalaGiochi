@@ -2,12 +2,14 @@ package partite;
 
 import java.util.ArrayList;
 
+import rubamazzo.SituazioneRubamazzo;
+
 public class InfoPartitaRubaMazzo {
 	private static InfoPartitaRubaMazzo iprm;
-	private ArrayList<SituazioneRubaMazzo> info;
+	private ArrayList<SituazioneRubamazzo> info;
 	
 	private InfoPartitaRubaMazzo(){
-		info = new ArrayList<SituazioneRubaMazzo>();
+		info = new ArrayList<SituazioneRubamazzo>();
 	}
 	
 	public static InfoPartitaRubaMazzo  getInstance(){
@@ -16,7 +18,7 @@ public class InfoPartitaRubaMazzo {
 		return iprm; 
 	}
 	
-	public SituazioneRubaMazzo getUtente(String username){
+	public SituazioneRubamazzo getUtente(String username){
 		for(int i = 0;i<info.size();i++)
 			if(info.get(i).getUsername().equals(username))
 				return info.get(i);
@@ -29,7 +31,11 @@ public class InfoPartitaRubaMazzo {
 				info.remove(i);
 	}
 	
-	public void addUtente(SituazioneRubaMazzo utente){
+	public void addUtente(SituazioneRubamazzo utente){
 		info.add(utente);
+	}
+	
+	public int numSituazioni(){
+		return info.size();
 	}
 }
