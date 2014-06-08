@@ -12,31 +12,25 @@ import java.util.StringTokenizer;
 
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
-import slot.Slot;
-import threadCode.ThreadLobbyRubaMazzo;
-import threadCode.ThreadLobbyTombola;
-import tombola.GiocatoreTombola;
-import tombola.Tabella;
-import model.Client;
+import rubamazzo.Mossa;
+import rubamazzo.SituazioneRubamazzo;
+import taskController.TaskController;
+import tombola.SituazioneTombola;
 import model.Utente;
 
 public class SocketTaskControl implements Runnable{
 	private Socket client;
 	private PrintWriter writer = null;
 	private BufferedReader reader = null;
-	private ConnessioneDB db;
-	private Utente u;
+	private Utente utente;
 	private boolean continua;
-	private GiocatoreTombola gt;
-	private ThreadLobbyRubaMazzo lrm;
-	private ThreadLobbyTombola lt;
-	private Slot s;
+	private TaskController tc;
+	private ConnessioneDB db;
 
 	public SocketTaskControl(Socket client){
 		this.client = client;
 		db = ConnessioneDB.getInstance();
-		lt = ThreadLobbyTombola.getIstance();
-		lrm = ThreadLobbyRubaMazzo.getInstance();
+		tc = new TaskController();
 		continua = true;
 	}
 	@Override
@@ -69,12 +63,18 @@ public class SocketTaskControl implements Runnable{
 					break;
 				}
 				case "VINTO":{
-					String combinazione = st.nextToken();
-					vinto(combinazione);
+					int numPartita = Integer.parseInt(st.nextToken());
+					int tipoVittoria = Integer.parseInt(st.nextToken());
+					int indiceCartella = Integer.parseInt(st.nextToken());
+					int indiceRiga = Integer.parseInt(st.nextToken());
+					vintoTombola(numPartita,tipoVittoria,indiceCartella,indiceRiga);
 					break;
 				}
 				case "MOSSA":{
-					mossa();
+					Mossa m = null;
+					int numPartita = 0;
+					//decode della mossa
+					mossaRubamazzo(m,numPartita);
 					break;
 				}
 				case "ROLLA":{
@@ -95,8 +95,8 @@ public class SocketTaskControl implements Runnable{
 					break;
 				}
 				case "GIOCOTOMBOLA":{
-					int numCartella = Integer.parseInt(reader.readLine());
-					giocoTombola(numCartella);
+					int numCartelle = Integer.parseInt(reader.readLine());
+					giocoTombola(numCartelle);
 				}
 				case "GIOCORUBAMAZZO":{
 					giocoRubaMazzo();
@@ -112,57 +112,45 @@ public class SocketTaskControl implements Runnable{
 	}
 	
 	public void giocoRubaMazzo(){
-		lrm.addUserLobbyRubaMazzo(u);
+		tc.giocoRubamazzo(utente);
 	}
 	
+	
 	public void giocoTombola(int numCartelle){
-		ArrayList<Tabella> cartelle = new ArrayList<Tabella>();
-		for(int i = 0; i< numCartelle;i++){
-			Tabella c = new Tabella();
-			cartelle.add(c);
-		}
-			
-		gt = new GiocatoreTombola(cartelle,u);
-		lt.addUserLobbyTomb(gt);
+		tc.giocoTombola(utente, numCartelle);
 	}
 	
 	public void termina(){
-		continua = false;
+		continua = tc.termina();
 	}
 
 	public void login(String username,String password) throws EccezioneClassificaVuota, EccezioneUtente{
 		int controllo = db.controlloUtente(username,password);
 
-		switch(controllo){
-		case 0:{
+		if(controllo == 0){
 			
-			Utente u = db.getUtente(username);
+			utente = db.getUtente(username);
 			int posizione = 0;
 			ArrayList<Utente> classifica = db.getClassifica(false);
 			for(int i=0; i<classifica.size();i++)
 				if(classifica.get(i).getUsername().equals(username))
 					posizione = i;
-			writer.println("OK#"+u.getNome()+"#"+u.getCognome()+"#"+u.getCrediti()+"#"+u.getUltimaVisita()+"#"+posizione);
-			break;
+			writer.println("OK#"+utente.getNome()+"#"+utente.getCognome()+"#"+utente.getCrediti()+"#"+utente.getUltimaVisita()+"#"+posizione);
 		}
-		case 1:{
-			writer.println("KO#nouser");
-		}
-		case 2:{
-			writer.println("KO#passerr");
-		}
+		else{
+			writer.println("KO#loginerr");
 		}
 
 	}
 
 	public void registra(String username,String password,String passwordConf,String nome,String cognome){
 		try {
-			if(db.getUtente(u.getUsername()) == null && password.equals(passwordConf)){
-				Utente u = new Utente(nome,cognome,username,password,0);
-				Boolean ok = db.addUtente(u);
+			if(db.getUtente(username) == null && password.equals(passwordConf)){
+				utente = new Utente(nome,cognome,username,password,0);
+				Boolean ok = db.addUtente(utente);
 				if(ok)
 					writer.println("OK");
-				else writer.println("OK#servererr");
+				else writer.println("OK#regfail");
 			}
 		} catch (EccezioneUtente e) {
 			// TODO Auto-generated catch block
@@ -171,38 +159,28 @@ public class SocketTaskControl implements Runnable{
 	}
 
 	public void rolla() throws EccezioneUtente{
-		if(db.getUtente(u.getUsername()).getCrediti() < 1)
-			writer.println("KO#NOCREDITI#"+db.getUtente(u.getUsername()).getCrediti());
-		else {
-			s = new Slot();
-			String comb = s.calcolaCombinazioneToString();
-			String premios = s.getStringaPremio();
-			int premio = s.getPremio(true);
-			db.aggiornaCrediti(premio,1,u.getUsername());
-			writer.println("OK#"+comb+premios);
-		}
+		tc.rolla(utente);
 	}
 
-	public void mossa(){
-
+	public void mossaRubamazzo(Mossa m, int numPartita){
+		tc.mossaRubaMazzo(utente, m, numPartita);
 	}
 
-	public void vinto(String combinazione){
+	public void vintoTombola(int numPartita,int tipoVittoria,int indiceCartella, int indiceRiga){
 
-
-
+		tc.vintoTombola(utente, numPartita, tipoVittoria, indiceCartella, indiceRiga);
 	}
 
-	public void aggTav(){
-
+	public void aggTombola(){
+		SituazioneTombola st = tc.aggTombola(utente);
 	}
 
-	public void aggTab(String username){
-
+	public void aggRubamazzo(){
+		SituazioneRubamazzo st = tc.aggRubamazzo(utente);
 	}
 
 	public void aggClass() throws EccezioneClassificaVuota{
-		ArrayList<Utente> classifica = db.getClassifica(true);
+		ArrayList<Utente> classifica = tc.aggClass(utente);
 		String s = "CLASSIFICA#"; 
 		for(int i=0;i<classifica.size();i++)
 			s = s + classifica.get(i).getUsername() + "#";
@@ -210,7 +188,7 @@ public class SocketTaskControl implements Runnable{
 	}
 
 	public void aggClassGiorn() throws EccezioneClassificaVuota{
-		ArrayList<Utente> classifica = db.getClassifica(true);
+		ArrayList<Utente> classifica = tc.aggClassGiorn(utente);
 		String s = "CLASSIFICA#"; 
 		for(int i=0;i<classifica.size();i++)
 			s = s + classifica.get(i).getUsername() + "#";
