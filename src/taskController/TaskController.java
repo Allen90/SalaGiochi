@@ -86,32 +86,27 @@ public class TaskController {
 		
 		try {
 			if(db.getUtente(utente.getUsername()).getCrediti() > 1) {
-
-				r = new Rollata(true);
-				
+				r = new Rollata(true);				
 				s = new Slot();
 				int[] comb = s.calcolaCombinazione();
 				int premio = s.getPremio(true);
 				db.aggiornaCrediti(premio,1,utente.getUsername());
-				
 				r.setComb(comb);
 				r.setPremio(premio);
 				r.setCrediti(utente.getCrediti());
-				
+				r.setVincita(s.getStringaPremio());
 			}
-		} catch (EccezioneUtente e) {
+		}catch (EccezioneUtente e) {
 			r = new Rollata(false);
+			r.setCrediti(utente.getCrediti());
 		}
 		return r;
-		
 	}
 
 	public ArrayList<Utente> aggClass(Utente utente) throws EccezioneClassificaVuota {
 		ArrayList<Utente> classifica = db.getClassifica(true);
 		return classifica;
 	}
-
-	
 
 	public ArrayList<Utente> aggClassGiorn(Utente utente) throws EccezioneClassificaVuota {
 		ArrayList<Utente> classifica = db.getClassifica(true);
