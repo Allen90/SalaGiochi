@@ -1,14 +1,13 @@
 package start;
 
+import eccezioni.EccezioneClassificaVuota;
 import interfacciaDB.ConnessioneDB;
 
 public class AggiornaCrediti implements Runnable{
 	private ConnessioneDB db;
-	private UtentiLoggati ul;
 
 	public AggiornaCrediti(){
 		db = ConnessioneDB.getInstance();
-		ul = UtentiLoggati.getIstance();
 	}
 	public void run() {
 		while(true){
@@ -19,7 +18,12 @@ public class AggiornaCrediti implements Runnable{
 			e.printStackTrace();
 		}
 		
-		db.aggiornaCrediti(ul.getLoggati());
+		try {
+			db.aggiornaPeriodico();
+		} catch (EccezioneClassificaVuota e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		}
 		
 	}
