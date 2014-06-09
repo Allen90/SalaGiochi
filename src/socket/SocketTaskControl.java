@@ -16,7 +16,7 @@ import rubamazzo.Mossa;
 import rubamazzo.SituazioneRubamazzo;
 import taskController.TaskController;
 import tombola.SituazioneTombola;
-import model.Utente;
+import userModel.Utente;
 
 public class SocketTaskControl implements Runnable{
 	private Socket client;

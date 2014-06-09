@@ -2,10 +2,10 @@ package lobby;
 
 import java.util.ArrayList;
 
-import model.Utente;
 import partite.PartitaRubaMazzo;
 import rubamazzo.GiocatoreRubamazzo;
 import rubamazzo.Mossa;
+import userModel.Utente;
 import eccezioni.EccezioneRubamazzo;
 
 public class ThreadLobbyRubaMazzo implements Runnable{

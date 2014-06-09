@@ -2,7 +2,7 @@ package start;
 
 import java.util.ArrayList;
 
-import model.Utente;
+import userModel.Utente;
 
 public class UtentiLoggati {
 	private static UtentiLoggati l;

@@ -8,7 +8,6 @@ import partite.InfoPartitaRubaMazzo;
 import partite.InfoPartitaTombola;
 import lobby.ThreadLobbyRubaMazzo;
 import lobby.ThreadLobbyTombola;
-import model.Utente;
 import rubamazzo.Mossa;
 import rubamazzo.SituazioneRubamazzo;
 import slot.Rollata;
@@ -16,6 +15,7 @@ import slot.Slot;
 import tombola.GiocatoreTombola;
 import tombola.SituazioneTombola;
 import tombola.Tabella;
+import userModel.Utente;
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
 

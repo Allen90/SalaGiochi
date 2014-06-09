@@ -10,6 +10,8 @@ import partite.InfoPartitaRubaMazzo;
 import partite.InfoPartitaTombola;
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
+import rmiServer.RmiServer;
+import rmiServer.RmiTaskControl;
 import rubamazzo.Mossa;
 import rubamazzo.SituazioneRubamazzo;
 import rubamazzo.TavoloRubamazzo;
@@ -19,11 +21,9 @@ import taskController.TaskController;
 import tombola.GiocatoreTombola;
 import tombola.SituazioneTombola;
 import tombola.Tabella;
+import userModel.Utente;
 import lobby.ThreadLobbyRubaMazzo;
 import lobby.ThreadLobbyTombola;
-import model.RmiServer;
-import model.RmiTaskControl;
-import model.Utente;
 
 public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskControl,Runnable{
 	private Utente utente;
@@ -91,7 +91,8 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 	public boolean vintoTombola(int numPartita,int tipoVittoria,int indiceCartella, int indiceRiga){
 		return tc.vintoTombola(utente, numPartita, tipoVittoria, indiceCartella, indiceRiga);
 	}
-	
+
+
 	
 
 }

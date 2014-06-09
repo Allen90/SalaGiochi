@@ -8,13 +8,12 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 import eccezioni.EccezioneUtente;
+import rmiClient.ClientRMI;
+import rmiServer.RmiServer;
+import rmiServer.RmiTaskControl;
 import start.UtentiLoggati;
-import model.Client;
-import model.ClientRMI;
-import model.RmiServer;
-import model.RmiTaskControl;
-import model.Utente;
-import model.UtenteReg;
+import userModel.Utente;
+import userModel.UtenteReg;
 
 public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runnable{
 

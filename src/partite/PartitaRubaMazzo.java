@@ -8,7 +8,7 @@ import eccezioni.EccezioneUtente;
 import rubamazzo.GiocatoreRubamazzo;
 import rubamazzo.SituazioneRubamazzo;
 import rubamazzo.TavoloRubamazzo;
-import model.Utente;
+import userModel.Utente;
 
 public class PartitaRubaMazzo implements Runnable{
 	private InfoPartitaRubaMazzo iprm;

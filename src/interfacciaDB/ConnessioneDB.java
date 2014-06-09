@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import start.UtentiLoggati;
+import userModel.Utente;
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
-import model.Utente;
 
 public class ConnessioneDB {
 
