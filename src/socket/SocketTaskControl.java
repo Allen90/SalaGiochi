@@ -12,11 +12,16 @@ import java.util.StringTokenizer;
 
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
+import encodec.Encoder;
 import rubamazzo.Mossa;
 import rubamazzo.SituazioneRubamazzo;
+import slot.Rollata;
 import taskController.TaskController;
 import tombola.SituazioneTombola;
 import userModel.Utente;
+
+//controllare riferimento al passaggio di utente!!!
+
 
 public class SocketTaskControl implements Runnable{
 	private Socket client;
@@ -62,7 +67,7 @@ public class SocketTaskControl implements Runnable{
 					registra(username,password,passwordConf,nome,cognome);
 					break;
 				}
-				case "VINTO":{
+				case "VINTOTOMBOLA":{
 					int numPartita = Integer.parseInt(st.nextToken());
 					int tipoVittoria = Integer.parseInt(st.nextToken());
 					int indiceCartella = Integer.parseInt(st.nextToken());
@@ -70,7 +75,7 @@ public class SocketTaskControl implements Runnable{
 					vintoTombola(numPartita,tipoVittoria,indiceCartella,indiceRiga);
 					break;
 				}
-				case "MOSSA":{
+				case "MOSSARUBAMAZZO":{
 					Mossa m = null;
 					int numPartita = 0;
 					//decode della mossa
@@ -81,13 +86,13 @@ public class SocketTaskControl implements Runnable{
 					rolla();
 					break;
 				}
-				case "AGGTAB":{
+				case "AGGTOMBOLA":{
 					break;
 				}
 				case "AGGCLASS":{
 					break;
 				}
-				case "AGGTAV":{
+				case "AGGRUBAMAZZO":{
 					break;
 				}
 				case "TERMINA":{
@@ -111,13 +116,19 @@ public class SocketTaskControl implements Runnable{
 
 	}
 	
-	public void giocoRubaMazzo(){
-		tc.giocoRubamazzo(utente);
+	public void giocoRubaMazzo() throws EccezioneUtente{
+		boolean valido;
+		valido = tc.giocoRubamazzo(utente);
+		String s = Encoder.serverRubamazzo(valido,utente.getCrediti());
+		writer.print(s);
 	}
 	
 	
-	public void giocoTombola(int numCartelle){
-		tc.giocoTombola(utente, numCartelle);
+	public void giocoTombola(int numCartelle) throws EccezioneUtente{
+		boolean valido;
+		valido = tc.giocoTombola(utente, numCartelle);
+		String s = Encoder.serverTombola(valido,utente.getCrediti());
+		writer.print(s);
 	}
 	
 	public void termina(){
@@ -159,11 +170,17 @@ public class SocketTaskControl implements Runnable{
 	}
 
 	public void rolla() throws EccezioneUtente{
-		tc.rolla(utente);
+		Rollata r = tc.rolla(utente);
+		String s = Encoder.serverRolla(r);
+		writer.print(s);
 	}
 
 	public void mossaRubamazzo(Mossa m, int numPartita){
-		tc.mossaRubaMazzo(utente, m, numPartita);
+		boolean ok;
+		ok = tc.mossaRubaMazzo(utente, m, numPartita);
+		
+		String s = Encoder.serverMossaRubamazzo(ok);
+		writer.print(s);
 	}
 
 	public void vintoTombola(int numPartita,int tipoVittoria,int indiceCartella, int indiceRiga){
@@ -174,11 +191,16 @@ public class SocketTaskControl implements Runnable{
 	public void aggTombola(){
 		@SuppressWarnings("unused")
 		SituazioneTombola st = tc.aggTombola(utente);
+		
+		String s = Encoder.serverAggiornaTombola(st);
+		writer.print(s);
 	}
 
 	public void aggRubamazzo(){
 		@SuppressWarnings("unused")
 		SituazioneRubamazzo st = tc.aggRubamazzo(utente);
+		String s = Encoder.serverAggiornaRubamazzo(st);
+		writer.print(s);
 	}
 
 	public void aggClass() throws EccezioneClassificaVuota{

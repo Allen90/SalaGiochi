@@ -27,8 +27,8 @@ public class TaskController {
 	private Slot s;
 	private InfoPartitaTombola ipt;
 	private InfoPartitaRubaMazzo iprm;
-	
-	
+
+
 	public TaskController(){
 		db = ConnessioneDB.getInstance();
 		lt = ThreadLobbyTombola.getIstance();
@@ -36,77 +36,96 @@ public class TaskController {
 		ipt = InfoPartitaTombola.getInstance();
 		iprm = InfoPartitaRubaMazzo.getInstance();
 	}
-	
+
 	public boolean termina(){
 		return false;
 	}
-	
+
 
 	public boolean mossaRubaMazzo(Utente utente ,Mossa m, int numPartita){
 		return lrm.controllaMossa(utente.getUsername(), numPartita, m);
 	}
-	
+
 	public boolean vintoTombola(Utente utente,int numPartita,int tipoVittoria, int indiceCartella,int indiceRiga){
 		return lt.aggiornaVincite(utente.getUsername(), numPartita, tipoVittoria, indiceCartella, indiceRiga);
 	}
-	
-	
+
+
 	public SituazioneTombola aggTombola(Utente utente){
 		return ipt.getUtente(utente.getUsername());
 	}
-	
+
 	public SituazioneRubamazzo aggRubamazzo(Utente utente){
 		return iprm.getUtente(utente.getUsername());
 	}
-	
-	
+
+
 	/*TODO controllo costo cartelle
 	 * 
 	 * il client ha il tasto "giocatombola" abilitato o meno in base al costo di una tabella
 	 * il controllo del numero tabelle massime viene fato lato server 
-	 * che manderà "KO#troppetabelle" (o simile) in caso di costo troppo alto
+	 * che manderï¿½ "KO#troppetabelle" (o simile) in caso di costo troppo alto
 	 */
-	public void giocoTombola(Utente utente, int numCartelle){
-		ArrayList<Tabella> cartelle = new ArrayList<Tabella>();
-		for(int i = 0; i< numCartelle;i++){
-			Tabella c = new Tabella();
-			cartelle.add(c);
+	public boolean giocoTombola(Utente utente, int numCartelle) throws EccezioneUtente{
+		boolean ok;
+		if(db.getUtente(utente.getUsername()).getCrediti()<100)
+			ok = false;
+		else{
+			ok = true;
+			ArrayList<Tabella> cartelle = new ArrayList<Tabella>();
+			for(int i = 0; i< numCartelle;i++){
+				Tabella c = new Tabella();
+				cartelle.add(c);
+			}
+
+			gt = new GiocatoreTombola(cartelle,utente);
+			lt.addUserLobbyTomb(gt);
 		}
-			
-		gt = new GiocatoreTombola(cartelle,utente);
-		lt.addUserLobbyTomb(gt);
+		return ok;
 	}
-	
-	public void giocoRubamazzo(Utente utente){
+
+	public boolean giocoRubamazzo(Utente utente) throws EccezioneUtente{
+		boolean ok;
+		if(db.getUtente(utente.getUsername()).getCrediti()<100)
+			ok = false;
+		else{
+			ok = true;
 		lrm.addUserLobbyRubaMazzo(utente);
+		}
+		return ok;
 	}
-	
+
 	public Rollata rolla(Utente utente) {
 		Rollata r = null;
-		
+
 		try {
 			if(db.getUtente(utente.getUsername()).getCrediti() > 1) {
-				r = new Rollata(true);				
+
+				r = new Rollata(true);
+
 				s = new Slot();
 				int[] comb = s.calcolaCombinazione();
 				int premio = s.getPremio(true);
 				db.aggiornaCrediti(premio,1,utente.getUsername());
+
 				r.setComb(comb);
 				r.setPremio(premio);
 				r.setCrediti(utente.getCrediti());
-				r.setVincita(s.getStringaPremio());
+
 			}
-		}catch (EccezioneUtente e) {
+		} catch (EccezioneUtente e) {
 			r = new Rollata(false);
-			r.setCrediti(utente.getCrediti());
 		}
 		return r;
+
 	}
 
 	public ArrayList<Utente> aggClass(Utente utente) throws EccezioneClassificaVuota {
 		ArrayList<Utente> classifica = db.getClassifica(true);
 		return classifica;
 	}
+
+
 
 	public ArrayList<Utente> aggClassGiorn(Utente utente) throws EccezioneClassificaVuota {
 		ArrayList<Utente> classifica = db.getClassifica(true);

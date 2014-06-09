@@ -1,29 +1,21 @@
 package rmi;
 
-import interfacciaDB.ConnessioneDB;
+
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-import partite.InfoPartitaRubaMazzo;
-import partite.InfoPartitaTombola;
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
-import rmiServer.RmiServer;
 import rmiServer.RmiTaskControl;
 import rubamazzo.Mossa;
 import rubamazzo.SituazioneRubamazzo;
-import rubamazzo.TavoloRubamazzo;
 import slot.Rollata;
-import slot.Slot;
 import taskController.TaskController;
-import tombola.GiocatoreTombola;
 import tombola.SituazioneTombola;
-import tombola.Tabella;
 import userModel.Utente;
-import lobby.ThreadLobbyRubaMazzo;
-import lobby.ThreadLobbyTombola;
+
 
 public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskControl,Runnable{
 	private Utente utente;
@@ -76,12 +68,13 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 		continua = tc.termina();
 	}
 	
-	public void giocoTombola(int numCartelle){
-		tc.giocoTombola(utente, numCartelle);
+	public boolean giocoTombola(int numCartelle) throws EccezioneUtente{
+		return tc.giocoTombola(utente, numCartelle);
+		
 	}
 	
-	public void giocoRubamazzo(){
-		tc.giocoRubamazzo(utente);
+	public boolean giocoRubamazzo() throws EccezioneUtente{
+		return tc.giocoRubamazzo(utente);
 	}
 	
 	public boolean mossaRubamazzo(Mossa m,int numPartita){
