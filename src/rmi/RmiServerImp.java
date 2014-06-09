@@ -8,7 +8,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 import eccezioni.EccezioneUtente;
-import rmiClient.ClientRMI;
+import rmiClient.ClientRmi;
 import rmiServer.RmiServer;
 import rmiServer.RmiTaskControl;
 import start.UtentiLoggati;
@@ -24,13 +24,13 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 	private ConnessioneDB db;
 	private UtentiLoggati l;
 	private Object lock;
-	
+
 	public RmiServerImp() throws RemoteException{
 		db = ConnessioneDB.getInstance();
 		l = UtentiLoggati.getIstance();
 		lock = null;
 	}
-	
+
 	public  void run() {
 		try {
 			// Creo il SecurityManager
@@ -62,35 +62,28 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 		}
 	}
 
-	public RmiTaskControl login(ClientRMI client,Utente user){
+	public RmiTaskControl login(ClientRmi client,Utente user) throws RemoteException{
 
 		RmiTaskControlImp server = null;
 
-		int controllo = db.controlloUtente(user.getUsername(),user.getPassword());
+		boolean valido = db.controlloUtente(user.getUsername(),user.getPassword());
 
-		switch(controllo){
-		case 0:{
-
+		if(valido){
+			server = new RmiTaskControlImp(user);
 			serverThread = new Thread(server);
 			serverThread.start();
-			
+
 			synchronized (lock) {
 				//Aggiungo il client ai client connessi
-				l.addLoggato(user.getUsername());			
+				l.addLoggato(user.getUsername());
 			}
 			return server;
 		}
-		case 1:
-		case 2: return null;
-		}
 		return null;
-
-
-
 
 	}
 
-	public RmiTaskControl registra(ClientRMI c,UtenteReg nuovo) throws EccezioneUtente, RemoteException{
+	public RmiTaskControl registra(ClientRmi c,UtenteReg nuovo) throws EccezioneUtente, RemoteException{
 		RmiTaskControlImp server = null;
 		if (nuovo.getPassword().equals(nuovo.getPasswordConf()))
 			if(db.controlloUtente(nuovo.getUsername(),nuovo.getPassword())){
