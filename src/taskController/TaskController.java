@@ -59,6 +59,13 @@ public class TaskController {
 		return iprm.getUtente(utente.getUsername());
 	}
 	
+	
+	/*TODO controllo costo cartelle
+	 * 
+	 * il client ha il tasto "giocatombola" abilitato o meno in base al costo di una tabella
+	 * il controllo del numero tabelle massime viene fato lato server 
+	 * che manderà "KO#troppetabelle" (o simile) in caso di costo troppo alto
+	 */
 	public void giocoTombola(Utente utente, int numCartelle){
 		ArrayList<Tabella> cartelle = new ArrayList<Tabella>();
 		for(int i = 0; i< numCartelle;i++){
@@ -75,11 +82,13 @@ public class TaskController {
 	}
 	
 	public Rollata rolla(Utente utente) {
-		Rollata r = new Rollata();
+		Rollata r = null;
 		
 		try {
 			if(db.getUtente(utente.getUsername()).getCrediti() > 1) {
 
+				r = new Rollata(true);
+				
 				s = new Slot();
 				int[] comb = s.calcolaCombinazione();
 				int premio = s.getPremio(true);
@@ -91,11 +100,10 @@ public class TaskController {
 				
 			}
 		} catch (EccezioneUtente e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			r = new Rollata(false);
 		}
 		return r;
+		
 	}
 
 	public ArrayList<Utente> aggClass(Utente utente) throws EccezioneClassificaVuota {
