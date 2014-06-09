@@ -148,19 +148,17 @@ public class ConnessioneDB {
     	else return utente;
     }
     
-    public int controlloUtente(String username, String password){
-    	Utente utente = null;
-    	
+    public boolean controlloUtente(String username, String password){    	
     	try{
-    		utente = getUtente(username);
+    		Utente utente = getUtente(username);
+    		if(utente.getPassword().equals(password))
+    			return true;
+    		else
+    			return false;
     	}catch(EccezioneUtente e){
     		e.printStackTrace();
-    		return 1;
+    		return false;
     	}
-    	
-    	if(utente.getPassword().equals(password))
-    		return 0;
-    	else return 2;
     }
     
     public boolean aggiornaCrediti(int premio, int spesa, String username) throws EccezioneUtente{

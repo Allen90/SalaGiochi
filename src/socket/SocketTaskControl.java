@@ -119,7 +119,7 @@ public class SocketTaskControl implements Runnable{
 	public void giocoRubaMazzo() throws EccezioneUtente{
 		boolean valido;
 		valido = tc.giocoRubamazzo(utente);
-		String s = Encoder.serverRubamazzo(valido,utente.getCrediti());
+		String s = Encoder.serverGiocoRubamazzo(valido,utente.getCrediti());
 		writer.print(s);
 	}
 	
@@ -127,7 +127,7 @@ public class SocketTaskControl implements Runnable{
 	public void giocoTombola(int numCartelle) throws EccezioneUtente{
 		boolean valido;
 		valido = tc.giocoTombola(utente, numCartelle);
-		String s = Encoder.serverTombola(valido,utente.getCrediti());
+		String s = Encoder.serverGiocoTombola(valido,utente.getCrediti());
 		writer.print(s);
 	}
 	
@@ -135,38 +135,59 @@ public class SocketTaskControl implements Runnable{
 		continua = tc.termina();
 	}
 
-	public void login(String username,String password) throws EccezioneClassificaVuota, EccezioneUtente{
-		int controllo = db.controlloUtente(username,password);
-
-		if(controllo == 0){
+	public void login(String username,String password) throws EccezioneClassificaVuota{
+		
+		boolean valido = db.controlloUtente(username,password);
+		int posizione = 0;
+		
+		if(valido){
 			
-			utente = db.getUtente(username);
-			int posizione = 0;
+			try {
+				utente = db.getUtente(username);
+			} catch (EccezioneUtente e) {
+				e.printStackTrace();
+			}
+			
 			ArrayList<Utente> classifica = db.getClassifica(false);
 			for(int i=0; i<classifica.size();i++)
 				if(classifica.get(i).getUsername().equals(username))
 					posizione = i;
-			writer.println("OK#"+utente.getNome()+"#"+utente.getCognome()+"#"+utente.getCrediti()+"#"+utente.getUltimaVisita()+"#"+posizione);
 		}
 		else{
-			writer.println("KO#loginerr");
+			utente = null;
 		}
+		writer.print(Encoder.serverLogin(utente, posizione, valido));
 
 	}
 
-	public void registra(String username,String password,String passwordConf,String nome,String cognome){
+	public void registra(String username,String password,String passwordConf,String nome,String cognome) throws EccezioneClassificaVuota{
+		boolean valido;
+		int posizione = 0;
+		
 		try {
-			if(db.getUtente(username) == null && password.equals(passwordConf)){
-				utente = new Utente(nome,cognome,username,password,0);
-				Boolean ok = db.addUtente(utente);
-				if(ok)
-					writer.println("OK");
-				else writer.println("OK#regfail");
-			}
+			db.getUtente(username);
+			valido = false;
 		} catch (EccezioneUtente e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if(password.equals(passwordConf)){
+				
+				try {
+					utente = new Utente(nome,cognome,username,password,0);
+				}catch(EccezioneUtente e1) {
+					e.printStackTrace();
+				}
+				
+				db.addUtente(utente);
+				ArrayList<Utente> classifica = db.getClassifica(false);
+				for(int i=0; i<classifica.size();i++)
+					if(classifica.get(i).getUsername().equals(username))
+						posizione = i;
+				
+				valido = true;
+			}else{
+				valido = false;
+			}
 		}
+		writer.print(Encoder.serverRegistra(utente, posizione, valido));
 	}
 
 	public void rolla() throws EccezioneUtente{
@@ -178,26 +199,20 @@ public class SocketTaskControl implements Runnable{
 	public void mossaRubamazzo(Mossa m, int numPartita){
 		boolean ok;
 		ok = tc.mossaRubaMazzo(utente, m, numPartita);
-		
-		String s = Encoder.serverMossaRubamazzo(ok);
-		writer.print(s);
+		writer.print(Encoder.serverMossaRubamazzo(ok));
 	}
 
 	public void vintoTombola(int numPartita,int tipoVittoria,int indiceCartella, int indiceRiga){
-
 		tc.vintoTombola(utente, numPartita, tipoVittoria, indiceCartella, indiceRiga);
 	}
 
 	public void aggTombola(){
-		@SuppressWarnings("unused")
 		SituazioneTombola st = tc.aggTombola(utente);
-		
 		String s = Encoder.serverAggiornaTombola(st);
 		writer.print(s);
 	}
 
 	public void aggRubamazzo(){
-		@SuppressWarnings("unused")
 		SituazioneRubamazzo st = tc.aggRubamazzo(utente);
 		String s = Encoder.serverAggiornaRubamazzo(st);
 		writer.print(s);

@@ -24,11 +24,13 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 	private ConnessioneDB db;
 	private UtentiLoggati l;
 	private Object lock;
+	
 	public RmiServerImp() throws RemoteException{
 		db = ConnessioneDB.getInstance();
 		l = UtentiLoggati.getIstance();
 		lock = null;
 	}
+	
 	public  void run() {
 		try {
 			// Creo il SecurityManager
@@ -91,7 +93,7 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 	public RmiTaskControl registra(ClientRMI c,UtenteReg nuovo) throws EccezioneUtente, RemoteException{
 		RmiTaskControlImp server = null;
 		if (nuovo.getPassword().equals(nuovo.getPasswordConf()))
-			if(db.controlloUtente(nuovo.getUsername(),nuovo.getPassword()) == 1){
+			if(db.controlloUtente(nuovo.getUsername(),nuovo.getPassword())){
 				Utente u = new Utente(nuovo.getNome(),nuovo.getCognome(),nuovo.getUsername(),nuovo.getPassword(),0);
 				synchronized (lock) {
 					//Aggiungo il client ai client connessi
