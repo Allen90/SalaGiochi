@@ -172,10 +172,12 @@ public class SocketTaskControl implements Runnable{
 	}
 
 	public void aggTombola(){
+		@SuppressWarnings("unused")
 		SituazioneTombola st = tc.aggTombola(utente);
 	}
 
 	public void aggRubamazzo(){
+		@SuppressWarnings("unused")
 		SituazioneRubamazzo st = tc.aggRubamazzo(utente);
 	}
 

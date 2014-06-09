@@ -1,18 +1,15 @@
 package socket;
+
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.StringTokenizer;
+
 public class SocketServer implements Runnable{
 	private static final int port = 4445;
-	private PrintWriter writer = null;
-	private BufferedReader reader = null;
+
 	@Override
 	public void run() {
 		ServerSocket serverSocket = null;
 		Socket clientSocket = null;
-		Thread thread = null;
 		try {
 			serverSocket = new ServerSocket(port);
 		} catch (IOException e) {

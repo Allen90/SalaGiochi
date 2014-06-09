@@ -2,7 +2,6 @@ package lobby;
 
 import java.util.ArrayList;
 
-import partite.InfoPartitaTombola;
 import partite.PartitaTombola;
 import tombola.GiocatoreTombola;
 
@@ -11,12 +10,12 @@ public class ThreadLobbyTombola implements Runnable{
 	private PartitaTombola task;
 	private ArrayList<PartitaTombola> pt; 
 	private ArrayList<GiocatoreTombola> giocatori;
-	private InfoPartitaTombola ipt;
+
 
 	private ThreadLobbyTombola(){
 		giocatori = new ArrayList<GiocatoreTombola>();
 		pt = new ArrayList<PartitaTombola>();
-		ipt = InfoPartitaTombola.getInstance();
+
 	}
 
 	public static ThreadLobbyTombola getIstance(){

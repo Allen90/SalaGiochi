@@ -2,8 +2,6 @@ package start;
 
 import java.util.ArrayList;
 
-import userModel.Utente;
-
 public class UtentiLoggati {
 	private static UtentiLoggati l;
 	private ArrayList<String> loggati;

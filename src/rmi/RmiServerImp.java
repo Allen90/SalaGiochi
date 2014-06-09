@@ -20,8 +20,6 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 	private static final long serialVersionUID = 1L;
 	private static String url = "rmi://127.0.0.1/server";
 	private static String host = "127.0.0.1";
-	private ClientRMI client;
-	private RmiTaskControlImp server = null;
 	private Thread serverThread;
 	private ConnessioneDB db;
 	private UtentiLoggati l;

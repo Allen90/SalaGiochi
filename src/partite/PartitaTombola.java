@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import tombola.GiocatoreTombola;
 import tombola.SituazioneTombola;
-import tombola.Tabella;
 import tombola.Tabellone;
 
 
@@ -15,6 +14,7 @@ public class PartitaTombola implements Runnable{
 	private Tabellone tabellone = null;
 	private InfoPartitaTombola ipt;
 	private boolean[] vincite;
+	@SuppressWarnings("unused")
 	private int numPartita;
 
 	public PartitaTombola(ArrayList<GiocatoreTombola> giocatori, int numPartita){

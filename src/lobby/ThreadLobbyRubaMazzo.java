@@ -3,7 +3,6 @@ package lobby;
 import java.util.ArrayList;
 
 import partite.PartitaRubaMazzo;
-import rubamazzo.GiocatoreRubamazzo;
 import rubamazzo.Mossa;
 import userModel.Utente;
 import eccezioni.EccezioneRubamazzo;
@@ -44,7 +43,6 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 
 	public boolean controllaMossa(String username,int numPartita,Mossa m){
 		boolean ok = false;
-		int indicePartita;
 			for(int j = 0; j < partite.get(numPartita).getGiocatori().size();j++){
 				if(partite.get(numPartita).getGiocatori().get(j).getUtente().getUsername().equals(username)){
 					
