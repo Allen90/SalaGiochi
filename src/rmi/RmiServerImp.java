@@ -13,7 +13,6 @@ import rmiServer.RmiServer;
 import rmiServer.RmiTaskControl;
 import start.UtentiLoggati;
 import userModel.Utente;
-import userModel.UtenteReg;
 
 public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runnable{
 
@@ -62,13 +61,14 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 		}
 	}
 
-	public RmiTaskControl login(ClientRmi client,Utente user) throws RemoteException{
+	public RmiTaskControl login(ClientRmi client,String username,String password) throws RemoteException, EccezioneUtente{
 
 		RmiTaskControlImp server = null;
 
-		boolean valido = db.controlloUtente(user.getUsername(),user.getPassword());
+		boolean valido = db.controlloUtente(username,password);
 
 		if(valido){
+			Utente user = db.getUtente(username);
 			server = new RmiTaskControlImp(user);
 			serverThread = new Thread(server);
 			serverThread.start();
@@ -83,11 +83,11 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 
 	}
 
-	public RmiTaskControl registra(ClientRmi c,UtenteReg nuovo) throws EccezioneUtente, RemoteException{
+	public RmiTaskControl registra(ClientRmi c,String username, String password, String confPassword, String nome, String cognome) throws EccezioneUtente, RemoteException{
 		RmiTaskControlImp server = null;
-		if (nuovo.getPassword().equals(nuovo.getPasswordConf()))
-			if(db.controlloUtente(nuovo.getUsername(),nuovo.getPassword())){
-				Utente u = new Utente(nuovo.getNome(),nuovo.getCognome(),nuovo.getUsername(),nuovo.getPassword(),0);
+		if (password.equals(confPassword))
+			if(db.controlloUtente(username,password)){
+				Utente u = new Utente(nome,cognome,username,password,0);
 				synchronized (lock) {
 					//Aggiungo il client ai client connessi
 					l.addLoggato(u.getUsername());
