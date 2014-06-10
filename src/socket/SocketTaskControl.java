@@ -51,6 +51,7 @@ public class SocketTaskControl implements Runnable{
 				String controlloTask = reader.readLine();
 				StringTokenizer st = new StringTokenizer(controlloTask,"#");
 				String caseS = st.nextToken();
+
 				switch(caseS){
 				case "LOGIN":{
 					String username = st.nextToken();
@@ -218,21 +219,12 @@ public class SocketTaskControl implements Runnable{
 		writer.print(s);
 	}
 
-	public void aggClass() throws EccezioneClassificaVuota{
-		ArrayList<Utente> classifica = tc.aggClass(utente);
-		String s = "CLASSIFICA#"; 
-		for(int i=0;i<classifica.size();i++)
-			s = s + classifica.get(i).getUsername() + "#";
+	public void aggClass(boolean giorn) throws EccezioneClassificaVuota{
+		ArrayList<Utente> classifica = tc.aggClass(utente, giorn);
+		String s = Encoder.serverClassifica(classifica, giorn);
 		writer.println(s);
 	}
 
-	public void aggClassGiorn() throws EccezioneClassificaVuota{
-		ArrayList<Utente> classifica = tc.aggClassGiorn(utente);
-		String s = "CLASSIFICA#"; 
-		for(int i=0;i<classifica.size();i++)
-			s = s + classifica.get(i).getUsername() + "#";
-		writer.println(s);
-	}
 }
 
 

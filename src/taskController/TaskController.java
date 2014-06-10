@@ -120,15 +120,8 @@ public class TaskController {
 
 	}
 
-	public ArrayList<Utente> aggClass(Utente utente) throws EccezioneClassificaVuota {
-		ArrayList<Utente> classifica = db.getClassifica(true);
-		return classifica;
-	}
-
-
-
-	public ArrayList<Utente> aggClassGiorn(Utente utente) throws EccezioneClassificaVuota {
-		ArrayList<Utente> classifica = db.getClassifica(true);
+	public ArrayList<Utente> aggClass(Utente utente, boolean giorn) throws EccezioneClassificaVuota {
+		ArrayList<Utente> classifica = db.getClassifica(giorn);
 		return classifica;
 	}
 
