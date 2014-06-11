@@ -14,6 +14,7 @@ import rubamazzo.SituazioneRubamazzo;
 import slot.Rollata;
 import taskController.TaskController;
 import tombola.SituazioneTombola;
+import userModel.InfoHome;
 import userModel.Utente;
 
 
@@ -54,13 +55,13 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 
 	@Override
 	public ArrayList<Utente> aggClass() throws EccezioneClassificaVuota {
-		return tc.aggClass(utente);
+		return tc.aggClass(utente,false);
 		
 	}
 
 	@Override
 	public ArrayList<Utente> aggClassGiorn() throws EccezioneClassificaVuota {
-		return tc.aggClassGiorn(utente);
+		return tc.aggClass(utente,true);
 	}
 
 	@Override
@@ -85,6 +86,11 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 		return tc.vintoTombola(utente, numPartita, tipoVittoria, indiceCartella, indiceRiga);
 	}
 
+	
+	public InfoHome getInfoHome(){
+		InfoHome ih = new InfoHome(utente.getUsername(),utente.getCrediti());
+		return ih;
+	}
 
 	
 

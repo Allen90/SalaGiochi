@@ -16,8 +16,10 @@ public class PartitaTombola implements Runnable{
 	private boolean[] vincite;
 	@SuppressWarnings("unused")
 	private int numPartita;
+	private boolean terminato;
 
 	public PartitaTombola(ArrayList<GiocatoreTombola> giocatori, int numPartita){
+		terminato = false;
 		this.numPartita = numPartita;
 		tabellone = new Tabellone();
 		this.giocatori = giocatori;
@@ -40,11 +42,15 @@ public class PartitaTombola implements Runnable{
 	public ArrayList<GiocatoreTombola> getGiocatori(){
 		return giocatori;
 	}
+	
+	public void setFinito(){
+		terminato = true;
+	}
 
 	@Override
 	public void run() {
 
-		while(!tabellone.terminato()){
+		while(!tabellone.terminato() && terminato == false){
 			try {
 				Thread.sleep(4000);
 			} catch (InterruptedException e) {

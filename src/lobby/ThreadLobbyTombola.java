@@ -46,7 +46,9 @@ public class ThreadLobbyTombola implements Runnable{
 		for(int i = 0;i< pt.get(numPartita).getGiocatori().size();i++)
 			if(pt.get(numPartita).getGiocatori().get(i).getUtente().getUsername().equals(username))
 				pt.get(numPartita).getGiocatori().get(i).getCartelle().get(indiceCartella).rigaVinta(indiceRiga);
-		pt.get(numPartita).setVittoria(tipoVittoria);	
+		pt.get(numPartita).setVittoria(tipoVittoria);
+		if(tipoVittoria == 6)
+			pt.get(numPartita).setFinito();
 		return ok;
 	}
 
