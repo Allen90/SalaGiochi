@@ -124,5 +124,10 @@ public class TaskController {
 		ArrayList<Utente> classifica = db.getClassifica(giorn);
 		return classifica;
 	}
+	
+	public int getPosizione(String username) throws EccezioneUtente{
+		return db.getPosizioneGlobale(username);
+		
+	}
 
 }

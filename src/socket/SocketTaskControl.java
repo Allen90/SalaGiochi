@@ -12,12 +12,17 @@ import java.util.StringTokenizer;
 
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
+import encodec.Decoder;
 import encodec.Encoder;
 import rubamazzo.Mossa;
+import rubamazzo.MossaSocket;
 import rubamazzo.SituazioneRubamazzo;
 import slot.Rollata;
 import taskController.TaskController;
 import tombola.SituazioneTombola;
+import tombola.Vincita;
+import userModel.Login;
+import userModel.Registrazione;
 import userModel.Utente;
 
 //controllare riferimento al passaggio di utente!!!
@@ -48,39 +53,28 @@ public class SocketTaskControl implements Runnable{
 					Thread.sleep(500);
 				}
 
-				String controlloTask = reader.readLine();
-				StringTokenizer st = new StringTokenizer(controlloTask,"#");
-				String caseS = st.nextToken();
+				String stringaClient = reader.readLine();
+				String azione = Decoder.getTipoAzione(stringaClient);
 
-				switch(caseS){
+				switch(azione){
 				case "LOGIN":{
-					String username = st.nextToken();
-					String password = st.nextToken();
-					login(username,password);
+					Login l = Decoder.serverLogin(stringaClient);
+					login(l.getUsername(),l.getPassword());
 					break;
 				}
 				case "REGISTRA":{
-					String username = st.nextToken();
-					String password = st.nextToken();
-					String passwordConf = st.nextToken();
-					String nome = st.nextToken();
-					String cognome = st.nextToken();
-					registra(username,password,passwordConf,nome,cognome);
+					Registrazione r = Decoder.serverRegistra(stringaClient);
+					registra(r.getUsername(),r.getPassword(),r.getConfPass(),r.getNome(),r.getCognome());
 					break;
 				}
 				case "VINTOTOMBOLA":{
-					int numPartita = Integer.parseInt(st.nextToken());
-					int tipoVittoria = Integer.parseInt(st.nextToken());
-					int indiceCartella = Integer.parseInt(st.nextToken());
-					int indiceRiga = Integer.parseInt(st.nextToken());
-					vintoTombola(numPartita,tipoVittoria,indiceCartella,indiceRiga);
+					Vincita v = Decoder.serverVincitaTombola(stringaClient);
+					vintoTombola(v.getNumPartita(),v.getTipoVincita(),v.getIndiceCartella(),v.getIndiceRiga());
 					break;
 				}
 				case "MOSSARUBAMAZZO":{
-					Mossa m = null;
-					int numPartita = 0;
-					//decode della mossa
-					mossaRubamazzo(m,numPartita);
+					MossaSocket m = Decoder.serverMossarubamazzo(stringaClient);
+					mossaRubamazzo(m.getMossa(),m.getNumPartita());
 					break;
 				}
 				case "ROLLA":{
@@ -88,12 +82,16 @@ public class SocketTaskControl implements Runnable{
 					break;
 				}
 				case "AGGTOMBOLA":{
+					aggTombola();
 					break;
 				}
 				case "AGGCLASS":{
+					aggClass(true);
+					aggClass(false);
 					break;
 				}
 				case "AGGRUBAMAZZO":{
+					aggRubamazzo();
 					break;
 				}
 				case "TERMINA":{
@@ -101,7 +99,7 @@ public class SocketTaskControl implements Runnable{
 					break;
 				}
 				case "GIOCOTOMBOLA":{
-					int numCartelle = Integer.parseInt(reader.readLine());
+					int numCartelle = Decoder.serverGiocoTombola(stringaClient);
 					giocoTombola(numCartelle);
 				}
 				case "GIOCORUBAMAZZO":{
@@ -224,6 +222,8 @@ public class SocketTaskControl implements Runnable{
 		String s = Encoder.serverClassifica(classifica, giorn);
 		writer.println(s);
 	}
+	
+
 
 }
 
