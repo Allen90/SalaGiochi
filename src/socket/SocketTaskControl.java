@@ -203,7 +203,9 @@ public class SocketTaskControl implements Runnable{
 	}
 
 	public void vintoTombola(int numPartita,int tipoVittoria,int indiceCartella, int indiceRiga){
-		tc.vintoTombola(utente, numPartita, tipoVittoria, indiceCartella, indiceRiga);
+		boolean valido = tc.vintoTombola(utente, numPartita, tipoVittoria, indiceCartella, indiceRiga);
+		String s = Encoder.serverResponseVintoTombola(valido);
+		writer.print(s);
 	}
 
 	public void aggTombola(){

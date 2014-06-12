@@ -32,11 +32,21 @@ public class PartitaTombola implements Runnable{
 		}
 	}
 
-	public void setVittoria(int tipoVittoria){
-		vincite[tipoVittoria] = false;
-		for(int i = 0; i< giocatori.size();i++){
-			ipt.getUtente(giocatori.get(i).getUtente().getUsername()).aggiornaSituazione(tabellone, giocatori.get(i), vincite);
+	public boolean setVittoria(int tipoVittoria){
+		boolean ok = false;
+		if(vincite[tipoVittoria] == false)
+			ok = false;
+		else{
+			vincite[tipoVittoria] = false;
+			for(int i = 0; i< giocatori.size();i++){
+				ipt.getUtente(giocatori.get(i).getUtente().getUsername()).aggiornaSituazione(tabellone, giocatori.get(i), vincite);
+			}
+			
+			ok = true;
 		}
+		
+		return ok;
+		
 	}
 
 	public ArrayList<GiocatoreTombola> getGiocatori(){

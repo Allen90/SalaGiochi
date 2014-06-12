@@ -43,10 +43,11 @@ public class ThreadLobbyTombola implements Runnable{
 
 	public boolean aggiornaVincite(String username,int numPartita,int tipoVittoria, int indiceCartella,int indiceRiga){
 		boolean ok = false;
+		ok = pt.get(numPartita).setVittoria(tipoVittoria);
 		for(int i = 0;i< pt.get(numPartita).getGiocatori().size();i++)
 			if(pt.get(numPartita).getGiocatori().get(i).getUtente().getUsername().equals(username))
 				pt.get(numPartita).getGiocatori().get(i).getCartelle().get(indiceCartella).rigaVinta(indiceRiga);
-		pt.get(numPartita).setVittoria(tipoVittoria);
+		
 		if(tipoVittoria == 6)
 			pt.get(numPartita).setFinito();
 		return ok;
