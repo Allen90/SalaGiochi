@@ -27,12 +27,12 @@ public class StatementsDB {
 			+ "WHERE userid = ?";
 	
 	static String getClassifica = // OK
-			"SELECT userid, nome, cognome, crediti"
+			"SELECT userid, password, nome, cognome, crediti"
 			+ "FROM utenti"
 			+ "ORDER BY crediti DESC";
 	
 	static String getClassificaGiornaliera = // OK
-			"SELECT userid, nome, cognome, crediti_giornalieri"
+			"SELECT userid, password, nome, cognome, crediti_giornalieri"
 			+ "FROM utenti"
 			+ "ORDER BY crediti_giornalieri DESC";
 	

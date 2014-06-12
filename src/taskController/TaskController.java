@@ -15,6 +15,7 @@ import slot.Slot;
 import tombola.GiocatoreTombola;
 import tombola.SituazioneTombola;
 import tombola.Tabella;
+import userModel.EntryClassifica;
 import userModel.Utente;
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
@@ -120,8 +121,11 @@ public class TaskController {
 
 	}
 
-	public ArrayList<Utente> aggClass(Utente utente, boolean giorn) throws EccezioneClassificaVuota {
-		ArrayList<Utente> classifica = db.getClassifica(giorn);
+	public ArrayList<EntryClassifica> aggClass(Utente utente, boolean giorn) throws EccezioneClassificaVuota {
+		ArrayList<Utente> temp =  db.getClassifica(giorn);
+		ArrayList<EntryClassifica> classifica = new ArrayList<>();
+		for(Utente u : temp)
+			classifica.add(new EntryClassifica(u,giorn));
 		return classifica;
 	}
 	

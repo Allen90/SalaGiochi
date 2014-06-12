@@ -238,7 +238,7 @@ public class ConnessioneDB {
     	try{
 			while(rs.next()){
 				classifica.add(new Utente(rs.getString("nome"), rs.getString("cognome"),
-						rs.getString("userid"), rs.getString("password"), rs.getInt("crediti")));
+						rs.getString("userid"), rs.getString("password"), rs.getInt(5)));
 			}
     	}catch (SQLException e) {
 			e.printStackTrace();

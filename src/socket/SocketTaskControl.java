@@ -21,6 +21,7 @@ import slot.Rollata;
 import taskController.TaskController;
 import tombola.SituazioneTombola;
 import tombola.Vincita;
+import userModel.EntryClassifica;
 import userModel.Login;
 import userModel.Registrazione;
 import userModel.Utente;
@@ -218,8 +219,8 @@ public class SocketTaskControl implements Runnable{
 	}
 
 	public void aggClass(boolean giorn) throws EccezioneClassificaVuota{
-		ArrayList<Utente> classifica = tc.aggClass(utente, giorn);
-		String s = Encoder.serverClassifica(classifica, giorn);
+		ArrayList<EntryClassifica> classifica = tc.aggClass(utente, giorn);
+		String s = Encoder.serverClassifica(classifica);
 		writer.println(s);
 	}
 	
