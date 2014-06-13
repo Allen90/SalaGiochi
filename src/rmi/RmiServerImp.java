@@ -23,14 +23,20 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 	private ConnessioneDB db;
 	private UtentiLoggati l;
 	private Object lock;
+	private boolean continua;
 
 	public RmiServerImp() throws RemoteException{
 		db = ConnessioneDB.getInstance();
 		l = UtentiLoggati.getIstance();
 		lock = null;
 	}
+	
+	public void setFinito(){
+		continua = false;
+	}
 
 	public  void run() {
+		continua = true;
 		try {
 			// Creo il SecurityManager
 			if (System.getSecurityManager() == null)
@@ -41,19 +47,17 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 
 			// Bind dell'oggetto remoro nel registry
 			Registry registry = LocateRegistry.getRegistry(host);
-			registry.rebind(url, stub);			
+			System.out.println("qui");
+			registry.rebind(url, stub);
+			System.out.println("qui");
 			System.out.println("Modalità RMI avviata.");
 			//Attendo il comando di spegimento del Server.
-			while (true){
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {					
-					e.printStackTrace();
-				} 
-				// Effettuo l'unbind della classe remota			
-				registry.unbind(url);			
-				System.out.println("Modalita RMI terminata.");
+			while (continua){		
+				
 			}
+			// Effettuo l'unbind della classe remota
+			registry.unbind(url);			
+			System.out.println("Modalita RMI terminata.");
 
 		} catch (Exception e) {
 			System.err.println("Server exception: " + e.toString());
@@ -61,7 +65,7 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 		}
 	}
 
-	public RmiTaskControl login(ClientRmi client,String username,String password) throws RemoteException, EccezioneUtente{
+	public RmiTaskControl login(String username,String password) throws RemoteException, EccezioneUtente{
 
 		RmiTaskControlImp server = null;
 
@@ -83,7 +87,7 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 
 	}
 
-	public RmiTaskControl registra(ClientRmi c,String username, String password, String confPassword, String nome, String cognome) throws EccezioneUtente, RemoteException{
+	public RmiTaskControl registra(String username, String password, String confPassword, String nome, String cognome) throws EccezioneUtente, RemoteException{
 		RmiTaskControlImp server = null;
 		if (password.equals(confPassword))
 			if(db.controlloUtente(username,password)){

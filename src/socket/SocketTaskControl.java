@@ -46,6 +46,7 @@ public class SocketTaskControl implements Runnable{
 	}
 	@Override
 	public void run(){
+		System.out.println("creato thread per client:");
 		while(continua){
 			try {
 				reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -55,6 +56,7 @@ public class SocketTaskControl implements Runnable{
 				}
 
 				String stringaClient = reader.readLine();
+				System.out.println("ricevuto dal client: "+ stringaClient);
 				String azione = Decoder.getTipoAzione(stringaClient);
 
 				switch(azione){

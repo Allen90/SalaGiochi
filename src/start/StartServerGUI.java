@@ -1,5 +1,9 @@
 package start;
 
+
+
+// aggiornare tombola con aggiornamento crediti e calcolo premi
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -27,7 +31,7 @@ import socket.SocketServer;
 
 public class StartServerGUI {
 
-	private JFrame frame;
+	private static JFrame frame;
 
 	/**
 	 * Launch the application.
@@ -69,6 +73,21 @@ public class StartServerGUI {
 	public StartServerGUI() {
 		initialize();
 	}
+	
+	
+	public static void chiusuraServer(){
+		Date d = new Date();
+		try {
+			FileOutputStream file = new FileOutputStream("file.txt");
+			PrintStream Output = new PrintStream(file);
+			Output.println(d);
+			
+
+		} catch (IOException e1) {
+			System.out.println("Errore: " + e1);
+		}
+		frame.dispose();
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -77,21 +96,11 @@ public class StartServerGUI {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
 		JButton stopServer = new JButton("Stop Server");
 		stopServer.setBounds(88, 183, 270, 25);
 		stopServer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Date d = new Date();
-				try {
-					FileOutputStream file = new FileOutputStream("file.txt");
-					PrintStream Output = new PrintStream(file);
-					Output.println(d);
-
-				} catch (IOException e1) {
-					System.out.println("Errore: " + e1);
-				}
-				frame.dispose();
+				
 			}
 		});
 		frame.getContentPane().setLayout(null);
