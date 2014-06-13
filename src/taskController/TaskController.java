@@ -61,12 +61,6 @@ public class TaskController {
 	}
 
 
-	/*TODO controllo costo cartelle
-	 * 
-	 * il client ha il tasto "giocatombola" abilitato o meno in base al costo di una tabella
-	 * il controllo del numero tabelle massime viene fato lato server 
-	 * che mander� "KO#troppetabelle" (o simile) in caso di costo troppo alto
-	 */
 	public boolean giocoTombola(Utente utente, int numCartelle) throws EccezioneUtente{
 		boolean ok;
 		if(db.getUtente(utente.getUsername()).getCrediti()<100)
