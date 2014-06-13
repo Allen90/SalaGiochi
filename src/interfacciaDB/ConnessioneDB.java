@@ -31,9 +31,6 @@ public class ConnessioneDB {
           
         try {                
             Class.forName(DRIVER).newInstance();   
-            System.out.println("connessione...");
-            con = DriverManager.getConnection(PATH, USER, PWD);  
-            System.out.println("connessione creata");
         }            
         catch(Exception e) {  
             System.err.println(e.getMessage());
@@ -85,7 +82,14 @@ public class ConnessioneDB {
     		ok = false;
     	}catch(EccezioneUtente eu){
     		try{
-        		cdb = ConnessioneDB.getInstance();
+    			cdb = ConnessioneDB.getInstance();
+    	        System.out.println("connessione...");
+    	        try {
+    				con = DriverManager.getConnection(PATH, USER, PWD);
+    			} catch (SQLException e1) {
+    				e1.printStackTrace();
+    			}
+    	        System.out.println("connessione stabilita");
         		ps = cdb.getPStatement(StatementsDB.aggiungiUtente);
         		ps.setString(1, utente.getUsername());
         		ps.setString(2, utente.getPassword());
@@ -109,13 +113,19 @@ public class ConnessioneDB {
     }
     
     public Utente getUtente(String username) throws EccezioneUtente{
-    	ConnessioneDB cdb = null;
+    	ConnessioneDB cdb = ConnessioneDB.getInstance();
+        System.out.println("connessione...");
+        try {
+			con = DriverManager.getConnection(PATH, USER, PWD);
+	        System.out.println("connessione stabilita");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}  
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	Utente utente = null;
     
     	try {
-        	cdb = getInstance();
         	ps = cdb.getPStatement(StatementsDB.getUtente);
 			ps.setString(1, username);
 			rs = ps.executeQuery();
@@ -162,14 +172,22 @@ public class ConnessioneDB {
     }
     
     public boolean aggiornaCrediti(int premio, int spesa, String username) throws EccezioneUtente{
-    	ConnessioneDB cdb = null;
+    	ConnessioneDB cdb = ConnessioneDB.getInstance();
+        
     	PreparedStatement ps = null;
     	boolean ok = true;
     	Utente utente = null;
     	
     	try{
-    		cdb = ConnessioneDB.getInstance();
     		utente = getUtente(username);
+    		
+    		System.out.println("connessione...");
+            try {
+    			con = DriverManager.getConnection(PATH, USER, PWD);
+    			System.out.println("connessione stabilita");
+    		} catch (SQLException e1) {
+    			e1.printStackTrace();
+    		}  
     		ps = cdb.getPStatement(StatementsDB.aggiornaCrediti);
     		ps.setInt(1, utente.getCrediti()+premio-spesa);
     		ps.setInt(1, utente.getCrediti_giornalieri()+premio-spesa);
@@ -194,12 +212,18 @@ public class ConnessioneDB {
     }
     
     public boolean resetCreditiG(String username){
-    	ConnessioneDB cdb = null;
+    	ConnessioneDB cdb = ConnessioneDB.getInstance();
+        System.out.println("connessione...");
+        try {
+			con = DriverManager.getConnection(PATH, USER, PWD);
+			System.out.println("connessione stabilita");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}  
     	PreparedStatement ps = null;
     	boolean ok = true;
     	
     	try{
-    		cdb = ConnessioneDB.getInstance();
     		ps = cdb.getPStatement(StatementsDB.resetCreditiGiornalieri);
     		ps.setString(1, username);
     		ps.execute();
@@ -221,12 +245,18 @@ public class ConnessioneDB {
     
     public ArrayList<Utente> getClassifica(boolean isGiornaliera) throws EccezioneClassificaVuota{
     	ArrayList<Utente> classifica = new ArrayList<Utente>();
-    	ConnessioneDB cdb = null;
+    	ConnessioneDB cdb = ConnessioneDB.getInstance();
+        System.out.println("connessione...");
+        try {
+			con = DriverManager.getConnection(PATH, USER, PWD);
+			System.out.println("connessione stabilita");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}  
     	Statement st = null;
     	ResultSet rs = null;
     	
     	try{
-    		cdb = ConnessioneDB.getInstance();
     		st = cdb.getStatement();
     		if(isGiornaliera)
     			rs = st.executeQuery(StatementsDB.getClassificaGiornaliera);
@@ -260,14 +290,20 @@ public class ConnessioneDB {
     }
     
     public int getPosizioneGlobale(String username) throws EccezioneUtente{
-    	ConnessioneDB cdb = null;
+    	ConnessioneDB cdb = ConnessioneDB.getInstance();
+        System.out.println("connessione...");
+        try {
+			con = DriverManager.getConnection(PATH, USER, PWD);
+			System.out.println("connessione stabilita");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}  
     	Statement st = null;
     	ResultSet rs = null;
     	int posizione = 0;
     	boolean ok = false;
     	
     	try{
-    		cdb = ConnessioneDB.getInstance();
     		st = cdb.getStatement();
     		rs = st.executeQuery(StatementsDB.getClassifica);
     		
@@ -299,14 +335,13 @@ public class ConnessioneDB {
     
     public boolean aggiornaPeriodico() throws EccezioneClassificaVuota{
     	loggati = UtentiLoggati.getIstance();
-    	ConnessioneDB cdb = null;
+    	ConnessioneDB cdb = ConnessioneDB.getInstance();
     	PreparedStatement ps = null;
     	ArrayList<Utente> utentiDB = null;
     	boolean[] isOnline = null;
     	boolean ok = true;
     			
     	try{
-    		cdb = ConnessioneDB.getInstance();
     		utentiDB = getClassifica(false);
     		isOnline = new boolean[utentiDB.size()];
         	for(int i = 0;i < utentiDB.size(); i++){
@@ -315,6 +350,14 @@ public class ConnessioneDB {
         			if(loggati.presente(utentiDB.get(i).getUsername()))
         				isOnline[i] = true;
         	}
+        	
+        	System.out.println("connessione...");
+            try {
+    			con = DriverManager.getConnection(PATH, USER, PWD);
+    			System.out.println("connessione stabilita");
+    		} catch (SQLException e1) {
+    			e1.printStackTrace();
+    		}  
         	
         	ps = cdb.getPStatement(StatementsDB.aggiornaCreditiPeriodico);
         	for(int i = 0; i < utentiDB.size(); i++){
@@ -345,7 +388,14 @@ public class ConnessioneDB {
     }
     
     public boolean aggiornaUltimoLogin(String username){
-    	ConnessioneDB cdb = null;
+    	ConnessioneDB cdb = ConnessioneDB.getInstance();
+        System.out.println("connessione...");
+        try {
+			con = DriverManager.getConnection(PATH, USER, PWD);
+			System.out.println("connessione stabilita");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}  
     	PreparedStatement ps = null;
     	boolean ok = true;
     	
@@ -353,7 +403,6 @@ public class ConnessioneDB {
     	java.sql.Date dataAttuale = new java.sql.Date(dataAttualeLong);
     	
     	try{
-    		cdb = ConnessioneDB.getInstance();
     		ps = cdb.getPStatement(StatementsDB.setUltimoLogin);
     		ps.setDate(1, dataAttuale);
     		ps.setString(2, username);
@@ -375,13 +424,19 @@ public class ConnessioneDB {
     }
     
     public Date getUltimoLogin(String username) throws EccezioneUtente{
-    	ConnessioneDB cdb = null;
+    	ConnessioneDB cdb = ConnessioneDB.getInstance();
+        System.out.println("connessione...");
+        try {
+			con = DriverManager.getConnection(PATH, USER, PWD);
+			System.out.println("connessione stabilita");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}  
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	Long dataAttualeSQL = null;
     	
     	try{
-    		cdb = ConnessioneDB.getInstance();
     		ps = cdb.getPStatement(StatementsDB.getUltimoLogin);
     		ps.setString(1, username);
     		rs = ps.executeQuery();
