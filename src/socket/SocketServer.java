@@ -20,8 +20,10 @@ public class SocketServer implements Runnable{
 		System.out.println("Mi metto in ascolto");
 		try {
 			while(true){
-				System.out.println("nuova connessione client");
+				
 				clientSocket = serverSocket.accept();
+				System.out.println("nuova connessione client");
+				System.out.println(""+clientSocket);
 				System.out.println("creo thread per il client connesso");
 				SocketTaskControl task = new SocketTaskControl(clientSocket);
 				Thread t = new Thread(task);

@@ -37,26 +37,30 @@ public class SocketTaskControl implements Runnable{
 	private boolean continua;
 	private TaskController tc;
 	private ConnessioneDB db;
+	private String stringaClient;
 
-	public SocketTaskControl(Socket client){
+	public SocketTaskControl(Socket client) throws IOException{
 		this.client = client;
 		db = ConnessioneDB.getInstance();
 		tc = new TaskController();
 		continua = true;
+		reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+		writer = new PrintWriter(client.getOutputStream(), true);
 	}
 	@Override
 	public void run(){
-		System.out.println("creato thread per client:");
+		System.out.println("creato thread per client:" + client);
 		while(continua){
 			try {
-				reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-				writer = new PrintWriter(client.getOutputStream(), true);
+
 				while(!reader.ready()){
+					System.out.println("ciclo sleep");
 					Thread.sleep(500);
 				}
 
-				String stringaClient = reader.readLine();
-				System.out.println("ricevuto dal client: "+ stringaClient);
+				System.out.println("sto per leggere stringa client");
+
+				stringaClient = reader.readLine();
 				String azione = Decoder.getTipoAzione(stringaClient);
 
 				switch(azione){
@@ -109,7 +113,10 @@ public class SocketTaskControl implements Runnable{
 					giocoRubaMazzo();
 				}
 				}
-			} catch (IOException | InterruptedException | EccezioneUtente | EccezioneClassificaVuota e) {
+			} catch (IOException | EccezioneUtente | EccezioneClassificaVuota e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -117,39 +124,39 @@ public class SocketTaskControl implements Runnable{
 
 
 	}
-	
+
 	public void giocoRubaMazzo() throws EccezioneUtente{
 		boolean valido;
 		valido = tc.giocoRubamazzo(utente);
 		String s = Encoder.serverGiocoRubamazzo(valido,utente.getCrediti());
 		writer.print(s);
 	}
-	
-	
+
+
 	public void giocoTombola(int numCartelle) throws EccezioneUtente{
 		boolean valido;
 		valido = tc.giocoTombola(utente, numCartelle);
 		String s = Encoder.serverGiocoTombola(valido,utente.getCrediti());
 		writer.print(s);
 	}
-	
+
 	public void termina(){
 		continua = tc.termina();
 	}
 
 	public void login(String username,String password) throws EccezioneClassificaVuota{
-		
+		System.out.println("sto controllando utente");
 		boolean valido = db.controlloUtente(username,password);
 		int posizione = 0;
-		
+
 		if(valido){
-			
+
 			try {
 				utente = db.getUtente(username);
 			} catch (EccezioneUtente e) {
 				e.printStackTrace();
 			}
-			
+
 			ArrayList<Utente> classifica = db.getClassifica(false);
 			for(int i=0; i<classifica.size();i++)
 				if(classifica.get(i).getUsername().equals(username))
@@ -158,32 +165,33 @@ public class SocketTaskControl implements Runnable{
 		else{
 			utente = null;
 		}
-		writer.print(Encoder.serverLogin(utente, posizione, valido));
-
+		System.out.println(valido);
+		writer.println(Encoder.serverLogin(utente, posizione, valido));
+		writer.flush();
 	}
 
 	public void registra(String username,String password,String passwordConf,String nome,String cognome) throws EccezioneClassificaVuota{
 		boolean valido;
 		int posizione = 0;
-		
+
 		try {
 			db.getUtente(username);
 			valido = false;
 		} catch (EccezioneUtente e) {
 			if(password.equals(passwordConf)){
-				
+
 				try {
 					utente = new Utente(nome,cognome,username,password,0);
 				}catch(EccezioneUtente e1) {
 					e.printStackTrace();
 				}
-				
+
 				db.addUtente(utente);
 				ArrayList<Utente> classifica = db.getClassifica(false);
 				for(int i=0; i<classifica.size();i++)
 					if(classifica.get(i).getUsername().equals(username))
 						posizione = i;
-				
+
 				valido = true;
 			}else{
 				valido = false;
@@ -227,7 +235,7 @@ public class SocketTaskControl implements Runnable{
 		String s = Encoder.serverClassifica(classifica);
 		writer.println(s);
 	}
-	
+
 
 
 }

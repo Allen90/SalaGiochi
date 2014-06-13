@@ -66,7 +66,7 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 	}
 
 	public RmiTaskControl login(String username,String password) throws RemoteException, EccezioneUtente{
-
+		System.out.println("richiesta login rmi");
 		RmiTaskControlImp server = null;
 
 		boolean valido = db.controlloUtente(username,password);
@@ -89,6 +89,7 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 
 	public RmiTaskControl registra(String username, String password, String confPassword, String nome, String cognome) throws EccezioneUtente, RemoteException{
 		RmiTaskControlImp server = null;
+		System.out.println("richiesta login socket");
 		if (password.equals(confPassword))
 			if(db.controlloUtente(username,password)){
 				Utente u = new Utente(nome,cognome,username,password,0);

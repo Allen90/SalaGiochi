@@ -49,14 +49,14 @@ public class StartServerGUI {
 					ThreadLobbyRubaMazzo lrm = ThreadLobbyRubaMazzo.getInstance();
 
 					t1 = new Thread(ssocket);
-					t2 = new Thread(srmi);
+					//t2 = new Thread(srmi);
 					t3 = new Thread(ag);
 					t4 = new Thread(lt);
 					t5 = new Thread(lrm);
 					t5.start();
 					t4.start();
 					t3.start();
-					t2.start();
+					//t2.start();
 					t1.start();
 					StartServerGUI window = new StartServerGUI();
 					window.frame.setVisible(true);
