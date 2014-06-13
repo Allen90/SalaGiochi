@@ -3,46 +3,46 @@ package interfacciaDB;
 public class StatementsDB {
 
 	static String aggiornaCrediti = // OK
-			"UPDATE utenti"
-			+ "SET crediti = ?, crediti_giornalieri = ?"
+			"UPDATE utenti "
+			+ "SET crediti = ?, crediti_giornalieri = ? "
 			+ "WHERE userid = ?";
 	
 	static String aggiornaCreditiPeriodico = // OK
-			"UPDATE utenti"
-			+ "SET crediti = ?"
+			"UPDATE utenti "
+			+ "SET crediti = ? "
 			+ "WHERE userid = ?";
 	
 	static String resetCreditiGiornalieri = // OK
-			"UPDATE utenti"
-			+ "SET crediti_giornalieri = 0"
+			"UPDATE utenti "
+			+ "SET crediti_giornalieri = 0 "
 			+ "WHERE userid = ?";
 	
 	static String aggiungiUtente = // OK
-			"INSERT INTO utenti (userid, pass, nome, cognome)"
+			"INSERT INTO utenti (userid, pass, nome, cognome) "
 			+ "VALUES (?,?,?,?)";
 	
 	static String getUtente = // OK
-			"SELECT *"
-			+ "FROM utenti"
-			+ "WHERE userid = ?";
+			"SELECT * "
+			+ "FROM utenti "
+			+ "WHERE USERID = ?";
 	
 	static String getClassifica = // OK
-			"SELECT userid, password, nome, cognome, crediti"
-			+ "FROM utenti"
+			"SELECT userid, password, nome, cognome, crediti "
+			+ "FROM utenti "
 			+ "ORDER BY crediti DESC";
 	
 	static String getClassificaGiornaliera = // OK
-			"SELECT userid, password, nome, cognome, crediti_giornalieri"
-			+ "FROM utenti"
+			"SELECT userid, password, nome, cognome, crediti_giornalieri "
+			+ "FROM utenti "
 			+ "ORDER BY crediti_giornalieri DESC";
 	
 	static String getUltimoLogin = //OK
-			"SELECT ultimo_login"
-			+ "FROM utenti"
+			"SELECT ultimo_login "
+			+ "FROM utenti "
 			+ "WHERE userid = ?";
 	
 	static String setUltimoLogin = //OK
-			"UPDATE utenti"
-			+ "SET ultimo_login = ?"
+			"UPDATE utenti "
+			+ "SET ultimo_login = ? "
 			+ "WHERE userid = ?";
 }

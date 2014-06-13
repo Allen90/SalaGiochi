@@ -20,7 +20,7 @@ public class ConnessioneDB {
 	private static UtentiLoggati loggati = null;
     private static ConnessioneDB dbc = null;
     private static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-	private static final String PATH="jdbc:derby:DBSalagiochi";
+	private static final String PATH="jdbc:derby:DBSalagiochi;create=true";
 	private static final String USER="user";
 	private static final String PWD="pass";
 	
@@ -30,7 +30,7 @@ public class ConnessioneDB {
 	private ConnessioneDB() {  
           
         try {                
-            Class.forName(DRIVER).newInstance();   
+            Class.forName(DRIVER).newInstance();  
         }            
         catch(Exception e) {  
             System.err.println(e.getMessage());
@@ -131,6 +131,7 @@ public class ConnessioneDB {
 			rs = ps.executeQuery();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			
 		}
 
 
