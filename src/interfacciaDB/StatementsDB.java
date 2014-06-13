@@ -18,7 +18,7 @@ public class StatementsDB {
 			+ "WHERE userid = ?";
 	
 	static String aggiungiUtente = // OK
-			"INSERT INTO utenti (userid, pass, nome, cognome) "
+			"INSERT INTO utenti (userid, password, nome, cognome) "
 			+ "VALUES (?,?,?,?)";
 	
 	static String getUtente = // OK
