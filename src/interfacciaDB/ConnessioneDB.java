@@ -95,6 +95,7 @@ public class ConnessioneDB {
         		ps.setString(2, utente.getPassword());
         		ps.setString(3, utente.getNome());
         		ps.setString(4, utente.getCognome());
+        		ps.setDate(5, utente.getUltimaVisitaSQL());
         		ps.execute();
         	}catch(SQLException e){
         		e.printStackTrace();

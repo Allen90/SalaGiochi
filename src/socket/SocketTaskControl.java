@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
+import java.util.Date;
 
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
@@ -179,9 +179,10 @@ public class SocketTaskControl implements Runnable{
 			valido = false;
 		} catch (EccezioneUtente e) {
 			if(password.equals(passwordConf)){
-
+				
+				Date ultimaVisita = new Date();
 				try {
-					utente = new Utente(nome,cognome,username,password,0);
+					utente = new Utente(nome,cognome,username,password,0,ultimaVisita);
 				}catch(EccezioneUtente e1) {
 					e.printStackTrace();
 				}

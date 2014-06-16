@@ -6,9 +6,9 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Date;
 
 import eccezioni.EccezioneUtente;
-import rmiClient.ClientRmi;
 import rmiServer.RmiServer;
 import rmiServer.RmiTaskControl;
 import start.UtentiLoggati;
@@ -92,7 +92,9 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 		System.out.println("richiesta login socket");
 		if (password.equals(confPassword))
 			if(db.controlloUtente(username,password)){
-				Utente u = new Utente(nome,cognome,username,password,0);
+				Date ultimaVisita = new Date();
+				Utente u = new Utente(nome,cognome,username,password,0,ultimaVisita);
+				db.addUtente(u);
 				synchronized (lock) {
 					//Aggiungo il client ai client connessi
 					l.addLoggato(u.getUsername());

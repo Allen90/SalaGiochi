@@ -20,6 +20,8 @@ import userModel.Utente;
 
 
 public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskControl,Runnable{
+
+	private static final long serialVersionUID = 1L;
 	private Utente utente;
 	private Boolean continua;
 	private TaskController tc;
