@@ -92,7 +92,7 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 	
 	public InfoHome getInfoHome() throws EccezioneUtente{
 		int posizione = tc.getPosizione(utente.getUsername());
-		InfoHome ih = new InfoHome(utente.getNome(),utente.getCognome(),utente.getCrediti(),posizione);
+		InfoHome ih = new InfoHome(utente.getNome(),utente.getCognome(),utente.getCrediti(),posizione, utente.getUltimaVisita());
 		return ih;
 	}
 

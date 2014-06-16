@@ -152,6 +152,7 @@ public class SocketTaskControl implements Runnable{
 
 			try {
 				utente = db.getUtente(username);
+				System.out.println(utente.getUltimaVisita());
 			} catch (EccezioneUtente e) {
 				e.printStackTrace();
 			}
@@ -169,7 +170,7 @@ public class SocketTaskControl implements Runnable{
 		writer.flush();
 	}
 
-	public void registra(String username,String password,String passwordConf,String nome,String cognome) throws EccezioneClassificaVuota{
+	public void registra(String username,String password,String passwordConf,String nome,String cognome) throws EccezioneClassificaVuota, EccezioneUtente{
 		boolean valido;
 		int posizione = 0;
 
@@ -180,6 +181,7 @@ public class SocketTaskControl implements Runnable{
 			if(password.equals(passwordConf)){
 				
 				Date ultimaVisita = new Date();
+				System.out.println(ultimaVisita);
 				try {
 					utente = new Utente(nome,cognome,username,password,0,ultimaVisita);
 				}catch(EccezioneUtente e1) {
@@ -188,6 +190,8 @@ public class SocketTaskControl implements Runnable{
 
 				db.addUtente(utente);
 				System.out.println("qui dopo aggiunta");
+				Utente test = db.getUtente(username);
+				System.out.println(test.getUltimaVisita());
 				ArrayList<Utente> classifica = db.getClassifica(false);
 				for(int i=0; i<classifica.size();i++)
 					if(classifica.get(i).getUsername().equals(username))
