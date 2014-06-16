@@ -56,11 +56,13 @@ public class ConnessioneDB {
     
     public PreparedStatement getPStatement(String s){
     	PreparedStatement ps = null;
+    	System.out.println("get statement");
     	try{    		
     		ps = con.prepareStatement(s);
     	}catch(SQLException e){
     		e.printStackTrace();
     	}
+    	System.out.println("statement preso prima del return");
     	return ps;
     }
     
@@ -78,10 +80,13 @@ public class ConnessioneDB {
     	boolean ok = true;
     	
     	try{
+    		System.out.println("controllo username esistente "+ utente.getUsername());
     		getUtente(utente.getUsername());
+    		System.out.println("qui in utente esistente");
     		ok = false;
     	}catch(EccezioneUtente eu){
     		try{
+    			System.out.println("qui in utente non trovato");
     			cdb = ConnessioneDB.getInstance();
     	        System.out.println("connessione...");
     	        try {
@@ -91,6 +96,7 @@ public class ConnessioneDB {
     			}
     	        System.out.println("connessione stabilita");
         		ps = cdb.getPStatement(StatementsDB.aggiungiUtente);
+        		System.out.println("statement preso dopo il return");
         		ps.setString(1, utente.getUsername());
         		ps.setString(2, utente.getPassword());
         		ps.setString(3, utente.getNome());
@@ -168,7 +174,6 @@ public class ConnessioneDB {
     		else
     			return false;
     	}catch(EccezioneUtente e){
-    		e.printStackTrace();
     		return false;
     	}
     }
