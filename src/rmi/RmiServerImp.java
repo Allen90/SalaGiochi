@@ -77,10 +77,10 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 			serverThread = new Thread(server);
 			serverThread.start();
 
-			synchronized (lock) {
+//			synchronized (lock) {
 				//Aggiungo il client ai client connessi
 				l.addLoggato(user.getUsername());
-			}
+//			}
 			return server;
 		}
 		return null;
@@ -90,21 +90,20 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 	public RmiTaskControl registra(String username, String password, String confPassword, String nome, String cognome) throws EccezioneUtente, RemoteException{
 		RmiTaskControlImp server = null;
 		System.out.println("richiesta login socket");
-		if (password.equals(confPassword) && !db.controlloUtente(username, confPassword))
-			if(db.controlloUtente(username,password)){
-				Date ultimaVisita = new Date();
-				Utente u = new Utente(nome,cognome,username,password,0,ultimaVisita);
-				db.addUtente(u);
-//				synchronized (lock) {
-//					//Aggiungo il client ai client connessi
-//					l.addLoggato(u.getUsername());
-//				}
+		if (password.equals(confPassword) && !db.controlloUtente(username, confPassword)){
+			Date ultimaVisita = new Date();
+			Utente u = new Utente(nome,cognome,username,password,0,ultimaVisita);
+			db.addUtente(u);
+			//				synchronized (lock) {
+			//					//Aggiungo il client ai client connessi
+			//					l.addLoggato(u.getUsername());
+			//				}
 
-				server = new RmiTaskControlImp(u);
-				serverThread = new Thread(server);
-				serverThread.start();
-				return server;
-			}
+			server = new RmiTaskControlImp(u);
+			serverThread = new Thread(server);
+			serverThread.start();
+			return server;
+		}
 		return null;
 	}
 

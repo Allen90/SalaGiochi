@@ -171,7 +171,6 @@ public class ConnessioneDB {
     		else
     			return false;
     	}catch(EccezioneUtente e){
-    		e.printStackTrace();
     		return false;
     	}
     }
