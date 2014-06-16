@@ -115,11 +115,13 @@ public class TaskController {
 
 	}
 
-	public ArrayList<EntryClassifica> aggClass(Utente utente, boolean giorn) throws EccezioneClassificaVuota {
+	public ArrayList<EntryClassifica> aggClass(boolean giorn) throws EccezioneClassificaVuota {
 		ArrayList<Utente> temp =  db.getClassifica(giorn);
-		ArrayList<EntryClassifica> classifica = new ArrayList<>();
-		for(Utente u : temp)
+		ArrayList<EntryClassifica> classifica = new ArrayList<EntryClassifica>();
+		for(Utente u : temp){
 			classifica.add(new EntryClassifica(u,giorn));
+			System.out.println("qui in creazione classifica:" + u.getUsername() + " "+u.getCrediti());
+		}
 		return classifica;
 	}
 	

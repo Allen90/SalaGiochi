@@ -56,13 +56,11 @@ public class ConnessioneDB {
     
     public PreparedStatement getPStatement(String s){
     	PreparedStatement ps = null;
-    	System.out.println("get statement");
     	try{    		
     		ps = con.prepareStatement(s);
     	}catch(SQLException e){
     		e.printStackTrace();
     	}
-    	System.out.println("statement preso prima del return");
     	return ps;
     }
     
@@ -80,13 +78,10 @@ public class ConnessioneDB {
     	boolean ok = true;
     	
     	try{
-    		System.out.println("controllo username esistente "+ utente.getUsername());
     		getUtente(utente.getUsername());
-    		System.out.println("qui in utente esistente");
     		ok = false;
     	}catch(EccezioneUtente eu){
     		try{
-    			System.out.println("qui in utente non trovato");
     			cdb = ConnessioneDB.getInstance();
     	        System.out.println("connessione...");
     	        try {
@@ -96,7 +91,6 @@ public class ConnessioneDB {
     			}
     	        System.out.println("connessione stabilita");
         		ps = cdb.getPStatement(StatementsDB.aggiungiUtente);
-        		System.out.println("statement preso dopo il return");
         		ps.setString(1, utente.getUsername());
         		ps.setString(2, utente.getPassword());
         		ps.setString(3, utente.getNome());
@@ -144,8 +138,8 @@ public class ConnessioneDB {
 
     	try {
 			while(rs.next()){
-				utente = new Utente(rs.getString("nome"), rs.getString("cognome"),
-						rs.getString("userid"), rs.getString("password"), rs.getInt("crediti"));
+				utente = new Utente(rs.getString("nome").trim(), rs.getString("cognome").trim(),
+						rs.getString("userid").trim(), rs.getString("password").trim(), rs.getInt("crediti"), rs.getDate("ULTIMO_LOGIN"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -166,14 +160,18 @@ public class ConnessioneDB {
     	else return utente;
     }
     
+    
+    
     public boolean controlloUtente(String username, String password){    	
     	try{
     		Utente utente = getUtente(username);
+    		System.out.println(utente.getUsername()+" "+utente.getPassword());
     		if(utente.getPassword().equals(password))
     			return true;
     		else
     			return false;
     	}catch(EccezioneUtente e){
+    		e.printStackTrace();
     		return false;
     	}
     }
@@ -274,8 +272,8 @@ public class ConnessioneDB {
     	
     	try{
 			while(rs.next()){
-				classifica.add(new Utente(rs.getString("nome"), rs.getString("cognome"),
-						rs.getString("userid"), rs.getString("password"), rs.getInt(5)));
+				classifica.add(new Utente(rs.getString("nome").trim(), rs.getString("cognome").trim(),
+						rs.getString("userid").trim(), rs.getString("password").trim(), rs.getInt(5)));
 			}
     	}catch (SQLException e) {
 			e.printStackTrace();
@@ -319,8 +317,8 @@ public class ConnessioneDB {
     	}
     	
     	try{
-			for(posizione = 1; rs.next() || rs.getString("userid").equalsIgnoreCase(username); posizione ++)
-				if(rs.getString("userid").equals(username)) ok = true;
+			for(posizione = 1; rs.next() || rs.getString("userid").trim().equalsIgnoreCase(username); posizione ++)
+				if(rs.getString("userid").trim().equals(username)) ok = true;
 				
     	}catch (SQLException e) {
 			e.printStackTrace();

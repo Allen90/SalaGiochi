@@ -58,13 +58,13 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 
 	@Override
 	public ArrayList<EntryClassifica> aggClass() throws EccezioneClassificaVuota {
-		return tc.aggClass(utente,false);
+		return tc.aggClass(false);
 		
 	}
 
 	@Override
 	public ArrayList<EntryClassifica> aggClassGiorn() throws EccezioneClassificaVuota {
-		return tc.aggClass(utente,true);
+		return tc.aggClass(true);
 	}
 
 	@Override

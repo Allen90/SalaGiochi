@@ -92,8 +92,8 @@ public class SocketTaskControl implements Runnable{
 					break;
 				}
 				case "AGGCLASS":{
-					aggClass(true);
 					aggClass(false);
+					aggClass(true);
 					break;
 				}
 				case "AGGRUBAMAZZO":{
@@ -149,9 +149,10 @@ public class SocketTaskControl implements Runnable{
 		int posizione = 0;
 
 		if(valido){
-
+			db.aggiornaUltimoLogin(username);
 			try {
 				utente = db.getUtente(username);
+				System.out.println("Data letta da db"+ db.getUltimoLogin(username));
 				System.out.println(utente.getUltimaVisita());
 			} catch (EccezioneUtente e) {
 				e.printStackTrace();
@@ -167,7 +168,6 @@ public class SocketTaskControl implements Runnable{
 		}
 		System.out.println(valido);
 		writer.println(Encoder.serverLogin(utente, posizione, valido));
-		writer.flush();
 	}
 
 	public void registra(String username,String password,String passwordConf,String nome,String cognome) throws EccezioneClassificaVuota, EccezioneUtente{
@@ -187,7 +187,7 @@ public class SocketTaskControl implements Runnable{
 				}catch(EccezioneUtente e1) {
 					e.printStackTrace();
 				}
-
+				System.out.println("Data letta da db"+ db.getUltimoLogin(username));
 				db.addUtente(utente);
 				System.out.println("qui dopo aggiunta");
 				Utente test = db.getUtente(username);
@@ -237,8 +237,10 @@ public class SocketTaskControl implements Runnable{
 	}
 
 	public void aggClass(boolean giorn) throws EccezioneClassificaVuota{
-		ArrayList<EntryClassifica> classifica = tc.aggClass(utente, giorn);
+		ArrayList<EntryClassifica> classifica = tc.aggClass(giorn);
 		String s = Encoder.serverClassifica(classifica);
+		System.out.println("qui in server prima dell'invio");
+		System.out.println(s);
 		writer.println(s);
 	}
 
