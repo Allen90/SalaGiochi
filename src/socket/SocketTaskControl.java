@@ -54,7 +54,6 @@ public class SocketTaskControl implements Runnable{
 			try {
 
 				while(!reader.ready()){
-					System.out.println("ciclo sleep");
 					Thread.sleep(500);
 				}
 
@@ -129,7 +128,7 @@ public class SocketTaskControl implements Runnable{
 		boolean valido;
 		valido = tc.giocoRubamazzo(utente);
 		String s = Encoder.serverGiocoRubamazzo(valido,utente.getCrediti());
-		writer.print(s);
+		writer.println(s);
 	}
 
 
@@ -137,7 +136,7 @@ public class SocketTaskControl implements Runnable{
 		boolean valido;
 		valido = tc.giocoTombola(utente, numCartelle);
 		String s = Encoder.serverGiocoTombola(valido,utente.getCrediti());
-		writer.print(s);
+		writer.println(s);
 	}
 
 	public void termina(){
@@ -188,6 +187,7 @@ public class SocketTaskControl implements Runnable{
 				}
 
 				db.addUtente(utente);
+				System.out.println("qui dopo aggiunta");
 				ArrayList<Utente> classifica = db.getClassifica(false);
 				for(int i=0; i<classifica.size();i++)
 					if(classifica.get(i).getUsername().equals(username))
@@ -198,37 +198,38 @@ public class SocketTaskControl implements Runnable{
 				valido = false;
 			}
 		}
-		writer.print(Encoder.serverRegistra(utente, posizione, valido));
+		System.out.println(Encoder.serverRegistra(utente, posizione, valido));
+		writer.println(Encoder.serverRegistra(utente, posizione, valido));
 	}
 
 	public void rolla() throws EccezioneUtente{
 		Rollata r = tc.rolla(utente);
 		String s = Encoder.serverRolla(r);
-		writer.print(s);
+		writer.println(s);
 	}
 
 	public void mossaRubamazzo(Mossa m, int numPartita){
 		boolean ok;
 		ok = tc.mossaRubaMazzo(utente, m, numPartita);
-		writer.print(Encoder.serverMossaRubamazzo(ok));
+		writer.println(Encoder.serverMossaRubamazzo(ok));
 	}
 
 	public void vintoTombola(int numPartita,int tipoVittoria,int indiceCartella, int indiceRiga){
 		boolean valido = tc.vintoTombola(utente, numPartita, tipoVittoria, indiceCartella, indiceRiga);
 		String s = Encoder.serverResponseVintoTombola(valido);
-		writer.print(s);
+		writer.println(s);
 	}
 
 	public void aggTombola(){
 		SituazioneTombola st = tc.aggTombola(utente);
 		String s = Encoder.serverAggiornaTombola(st);
-		writer.print(s);
+		writer.println(s);
 	}
 
 	public void aggRubamazzo(){
 		SituazioneRubamazzo st = tc.aggRubamazzo(utente);
 		String s = Encoder.serverAggiornaRubamazzo(st);
-		writer.print(s);
+		writer.println(s);
 	}
 
 	public void aggClass(boolean giorn) throws EccezioneClassificaVuota{

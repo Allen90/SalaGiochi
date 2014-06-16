@@ -138,8 +138,8 @@ public class ConnessioneDB {
 
     	try {
 			while(rs.next()){
-				utente = new Utente(rs.getString("nome"), rs.getString("cognome"),
-						rs.getString("userid"), rs.getString("password"), rs.getInt("crediti"));
+				utente = new Utente(rs.getString("nome").trim(), rs.getString("cognome").trim(),
+						rs.getString("userid").trim(), rs.getString("password").trim(), rs.getInt("crediti"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -163,6 +163,7 @@ public class ConnessioneDB {
     public boolean controlloUtente(String username, String password){    	
     	try{
     		Utente utente = getUtente(username);
+    		System.out.println(utente.getUsername()+" "+utente.getPassword());
     		if(utente.getPassword().equals(password))
     			return true;
     		else
@@ -269,8 +270,8 @@ public class ConnessioneDB {
     	
     	try{
 			while(rs.next()){
-				classifica.add(new Utente(rs.getString("nome"), rs.getString("cognome"),
-						rs.getString("userid"), rs.getString("password"), rs.getInt(5)));
+				classifica.add(new Utente(rs.getString("nome").trim(), rs.getString("cognome").trim(),
+						rs.getString("userid").trim(), rs.getString("password").trim(), rs.getInt(5)));
 			}
     	}catch (SQLException e) {
 			e.printStackTrace();
@@ -314,8 +315,8 @@ public class ConnessioneDB {
     	}
     	
     	try{
-			for(posizione = 1; rs.next() || rs.getString("userid").equalsIgnoreCase(username); posizione ++)
-				if(rs.getString("userid").equals(username)) ok = true;
+			for(posizione = 1; rs.next() || rs.getString("userid").trim().equalsIgnoreCase(username); posizione ++)
+				if(rs.getString("userid").trim().equals(username)) ok = true;
 				
     	}catch (SQLException e) {
 			e.printStackTrace();
