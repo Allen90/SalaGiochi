@@ -6,8 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import start.UtentiLoggati;
 import userModel.Utente;
@@ -72,11 +76,14 @@ public class ConnessioneDB {
     	}
     }
     
-    public boolean addUtente(Utente utente){
+    public boolean addUtente(Utente utente) throws ParseException{
     	ConnessioneDB cdb = null;
     	PreparedStatement ps = null;
     	boolean ok = true;
-    	
+		//DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzzz yyyy",Locale.ENGLISH);
+//		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+//		String s = dateFormat.format(utente.getUltimaVisita());
+//		java.sql.Date data = dateFormat.parse(s);
     	try{
     		getUtente(utente.getUsername());
     		ok = false;
@@ -96,6 +103,7 @@ public class ConnessioneDB {
         		ps.setString(3, utente.getNome());
         		ps.setString(4, utente.getCognome());
         		ps.setDate(5, utente.getUltimaVisitaSQL());
+        		//ps.setDate(5, data);
         		ps.execute();
         	}catch(SQLException e){
         		e.printStackTrace();
@@ -184,7 +192,7 @@ public class ConnessioneDB {
     	
     	try{
     		utente = getUtente(username);
-    		
+    		System.out.println("utente recuperato durante l'aggiorna crediti" + utente.getUsername() + " " +utente.getCrediti());
     		System.out.println("connessione...");
             try {
     			con = DriverManager.getConnection(PATH, USER, PWD);
@@ -194,9 +202,10 @@ public class ConnessioneDB {
     		}  
     		ps = cdb.getPStatement(StatementsDB.aggiornaCrediti);
     		ps.setInt(1, utente.getCrediti()+premio-spesa);
-    		ps.setInt(1, utente.getCrediti_giornalieri()+premio-spesa);
+    		ps.setInt(2, utente.getCrediti_giornalieri()+premio-spesa);
     		ps.setString(3, username);
     		ps.execute();
+    		System.out.println("eseguito query aggiornamento");
     	}catch(SQLException e){
     		e.printStackTrace();
     		ok = false;

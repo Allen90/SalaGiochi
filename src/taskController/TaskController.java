@@ -90,17 +90,18 @@ public class TaskController {
 		return ok;
 	}
 
-	public Rollata rolla(Utente utente) {
+	public Rollata rolla(String username) throws EccezioneUtente {
 		Rollata r = null;
-
+		int premio  = 0;
+		Utente utente = db.getUtente(username);
 		try {
-			if(db.getUtente(utente.getUsername()).getCrediti() > 1) {
+			if(utente.getCrediti() > 1) {
 
 				r = new Rollata(true);
 
 				s = new Slot();
 				int[] comb = s.calcolaCombinazione();
-				int premio = s.getPremio(true);
+				premio = s.getPremio(true);
 				db.aggiornaCrediti(premio,1,utente.getUsername());
 
 				r.setComb(comb);

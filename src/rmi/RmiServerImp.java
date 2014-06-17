@@ -6,7 +6,11 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import eccezioni.EccezioneUtente;
 import rmiServer.RmiServer;
@@ -73,6 +77,7 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 
 		if(valido){
 			Utente user = db.getUtente(username);
+			System.out.println("data login" + user.getUltimaVisita());
 			server = new RmiTaskControlImp(user);
 			serverThread = new Thread(server);
 			serverThread.start();
@@ -87,10 +92,11 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 
 	}
 
-	public RmiTaskControl registra(String username, String password, String confPassword, String nome, String cognome) throws EccezioneUtente, RemoteException{
+	public RmiTaskControl registra(String username, String password, String confPassword, String nome, String cognome) throws EccezioneUtente, RemoteException, ParseException{
 		RmiTaskControlImp server = null;
-		System.out.println("richiesta login socket");
+		System.out.println("richiesta registrazione rmi");
 		if (password.equals(confPassword) && !db.controlloUtente(username, confPassword)){
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
 			Date ultimaVisita = new Date();
 			Utente u = new Utente(nome,cognome,username,password,0,ultimaVisita);
 			db.addUtente(u);
@@ -98,7 +104,7 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 			//					//Aggiungo il client ai client connessi
 			//					l.addLoggato(u.getUsername());
 			//				}
-
+			u = db.getUtente(username);
 			server = new RmiTaskControlImp(u);
 			serverThread = new Thread(server);
 			serverThread.start();

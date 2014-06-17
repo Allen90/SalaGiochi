@@ -42,8 +42,8 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 	}
 
 	@Override
-	public Rollata rolla() {
-		return tc.rolla(utente);
+	public Rollata rolla() throws EccezioneUtente {
+		return tc.rolla(utente.getUsername());
 	}
 
 	@Override

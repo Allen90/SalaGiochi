@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -61,7 +62,10 @@ public class SocketTaskControl implements Runnable{
 
 				stringaClient = reader.readLine();
 				String azione = Decoder.getTipoAzione(stringaClient);
-
+//				if(!azione.equals("LOGIN") && !azione.equals("REGITRA")){
+//					System.out.println("sto aggiornando l'utente");
+//					utente = db.getUtente(utente.getUsername());
+//				}
 				switch(azione){
 				case "LOGIN":{
 					Login l = Decoder.serverLogin(stringaClient);
@@ -70,7 +74,12 @@ public class SocketTaskControl implements Runnable{
 				}
 				case "REGISTRA":{
 					Registrazione r = Decoder.serverRegistra(stringaClient);
-					registra(r.getUsername(),r.getPassword(),r.getConfPass(),r.getNome(),r.getCognome());
+					try {
+						registra(r.getUsername(),r.getPassword(),r.getConfPass(),r.getNome(),r.getCognome());
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					break;
 				}
 				case "VINTOTOMBOLA":{
@@ -170,7 +179,7 @@ public class SocketTaskControl implements Runnable{
 		writer.println(Encoder.serverLogin(utente, posizione, valido));
 	}
 
-	public void registra(String username,String password,String passwordConf,String nome,String cognome) throws EccezioneClassificaVuota, EccezioneUtente{
+	public void registra(String username,String password,String passwordConf,String nome,String cognome) throws EccezioneClassificaVuota, EccezioneUtente, ParseException{
 		boolean valido;
 		int posizione = 0;
 
@@ -187,8 +196,8 @@ public class SocketTaskControl implements Runnable{
 				}catch(EccezioneUtente e1) {
 					e.printStackTrace();
 				}
-				System.out.println("Data letta da db"+ db.getUltimoLogin(username));
 				db.addUtente(utente);
+				utente = db.getUtente(username);
 				System.out.println("qui dopo aggiunta");
 				Utente test = db.getUtente(username);
 				System.out.println(test.getUltimaVisita());
@@ -203,11 +212,12 @@ public class SocketTaskControl implements Runnable{
 			}
 		}
 		System.out.println(Encoder.serverRegistra(utente, posizione, valido));
+		
 		writer.println(Encoder.serverRegistra(utente, posizione, valido));
 	}
 
 	public void rolla() throws EccezioneUtente{
-		Rollata r = tc.rolla(utente);
+		Rollata r = tc.rolla(utente.getUsername());
 		String s = Encoder.serverRolla(r);
 		writer.println(s);
 	}
