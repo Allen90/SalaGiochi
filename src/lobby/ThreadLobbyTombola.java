@@ -54,9 +54,9 @@ public class ThreadLobbyTombola implements Runnable{
 	}
 
 	public void run(){
-		while(true){
-			int n = numUtentiLobby();
-			System.out.println(n);
+		int n = numUtentiLobby();
+		while(n < 1){
+			//System.out.println(n);
 			//System.out.println("utenti presenti:" + numUtentiLobby());
 			if(n > 1){
 				System.out.println("qui in lobby con piu' di una persona");
@@ -68,12 +68,13 @@ public class ThreadLobbyTombola implements Runnable{
 				pt.add(task);
 				t.start();
 
-				svuotaLobbyTombola();
+				//svuotaLobbyTombola();
 				//				} catch (InterruptedException e) {
 				//					// TODO Auto-generated catch block
 				//					e.printStackTrace();
 				//				}
 			}
+			n = numUtentiLobby();
 		}
 	}
 
