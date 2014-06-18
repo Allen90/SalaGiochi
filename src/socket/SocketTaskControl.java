@@ -237,6 +237,7 @@ public class SocketTaskControl implements Runnable{
 	public void aggTombola(){
 		SituazioneTombola st = tc.aggTombola(utente);
 		String s = Encoder.serverAggiornaTombola(st);
+		System.out.println(s);
 		writer.println(s);
 	}
 
