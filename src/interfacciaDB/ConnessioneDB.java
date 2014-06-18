@@ -325,9 +325,12 @@ public class ConnessioneDB {
     	}
     	
     	try{
-			for(posizione = 1; rs.next() || rs.getString("userid").trim().equalsIgnoreCase(username); posizione ++)
-				if(rs.getString("userid").trim().equals(username)) ok = true;
-				
+			for(posizione = 1; rs.next(); posizione ++){
+				if(rs.getString("userid").trim().equalsIgnoreCase(username)){
+					ok = true;
+					break;
+				}
+			}
     	}catch (SQLException e) {
 			e.printStackTrace();
 		}
