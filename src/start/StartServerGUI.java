@@ -35,7 +35,6 @@ public class StartServerGUI {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					int cacca;
 					Thread t1,t2,t3,t4,t5;
 					SocketServer ssocket = new SocketServer();
 					RmiServerImp srmi = new RmiServerImp();

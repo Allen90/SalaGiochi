@@ -33,8 +33,7 @@ public class ThreadLobbyTombola implements Runnable{
 	}
 
 	public void svuotaLobbyTombola(){
-		for(int i = 0;i < giocatori.size();i++)
-			giocatori.remove(i);
+		giocatori.removeAll(giocatori);
 	}
 
 	public void addUserLobbyTomb(GiocatoreTombola g){
@@ -55,20 +54,37 @@ public class ThreadLobbyTombola implements Runnable{
 
 	public void run(){
 		int n = numUtentiLobby();
-		while(n < 1){
-			//System.out.println(n);
+		while(true){
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			System.out.println(n);
 			//System.out.println("utenti presenti:" + numUtentiLobby());
 			if(n > 1){
 				System.out.println("qui in lobby con piu' di una persona");
 				//				try {
-				//Thread.sleep(3000);
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				System.out.println("sto per creare la partita");
 				task = new PartitaTombola(getUtenti(),pt.size());
 				Thread t = new Thread(task);
 				pt.add(task);
 				t.start();
-
-				//svuotaLobbyTombola();
+				
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				svuotaLobbyTombola();
 				//				} catch (InterruptedException e) {
 				//					// TODO Auto-generated catch block
 				//					e.printStackTrace();

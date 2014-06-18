@@ -50,15 +50,12 @@ public class SocketTaskControl implements Runnable{
 	}
 	@Override
 	public void run(){
-		System.out.println("creato thread per client:" + client);
 		while(continua){
 			try {
 
 				while(!reader.ready()){
 					Thread.sleep(500);
 				}
-
-				System.out.println("sto per leggere stringa client");
 
 				stringaClient = reader.readLine();
 				String azione = Decoder.getTipoAzione(stringaClient);
@@ -116,6 +113,7 @@ public class SocketTaskControl implements Runnable{
 				case "GIOCOTOMBOLA":{
 					int numCartelle = Decoder.serverGiocoTombola(stringaClient);
 					giocoTombola(numCartelle);
+					break;
 				}
 				case "GIOCORUBAMAZZO":{
 					giocoRubaMazzo();
@@ -153,7 +151,6 @@ public class SocketTaskControl implements Runnable{
 	}
 
 	public void login(String username,String password) throws EccezioneClassificaVuota{
-		System.out.println("sto controllando utente");
 		boolean valido = db.controlloUtente(username,password);
 		int posizione = 0;
 
@@ -161,8 +158,6 @@ public class SocketTaskControl implements Runnable{
 			db.aggiornaUltimoLogin(username);
 			try {
 				utente = db.getUtente(username);
-				System.out.println("Data letta da db"+ db.getUltimoLogin(username));
-				System.out.println(utente.getUltimaVisita());
 			} catch (EccezioneUtente e) {
 				e.printStackTrace();
 			}
@@ -175,7 +170,6 @@ public class SocketTaskControl implements Runnable{
 		else{
 			utente = null;
 		}
-		System.out.println(valido);
 		writer.println(Encoder.serverLogin(utente, posizione, valido));
 	}
 
@@ -190,7 +184,6 @@ public class SocketTaskControl implements Runnable{
 			if(password.equals(passwordConf)){
 				
 				Date ultimaVisita = new Date();
-				System.out.println(ultimaVisita);
 				try {
 					utente = new Utente(nome,cognome,username,password,0,ultimaVisita);
 				}catch(EccezioneUtente e1) {
@@ -198,9 +191,7 @@ public class SocketTaskControl implements Runnable{
 				}
 				db.addUtente(utente);
 				utente = db.getUtente(username);
-				System.out.println("qui dopo aggiunta");
 				Utente test = db.getUtente(username);
-				System.out.println(test.getUltimaVisita());
 				ArrayList<Utente> classifica = db.getClassifica(false);
 				for(int i=0; i<classifica.size();i++)
 					if(classifica.get(i).getUsername().equals(username))
@@ -211,7 +202,6 @@ public class SocketTaskControl implements Runnable{
 				valido = false;
 			}
 		}
-		System.out.println(Encoder.serverRegistra(utente, posizione, valido));
 		
 		writer.println(Encoder.serverRegistra(utente, posizione, valido));
 	}
@@ -237,7 +227,6 @@ public class SocketTaskControl implements Runnable{
 	public void aggTombola(){
 		SituazioneTombola st = tc.aggTombola(utente);
 		String s = Encoder.serverAggiornaTombola(st);
-		System.out.println(s);
 		writer.println(s);
 	}
 
@@ -250,8 +239,6 @@ public class SocketTaskControl implements Runnable{
 	public void aggClass(boolean giorn) throws EccezioneClassificaVuota{
 		ArrayList<EntryClassifica> classifica = tc.aggClass(giorn);
 		String s = Encoder.serverClassifica(classifica);
-		System.out.println("qui in server prima dell'invio");
-		System.out.println(s);
 		writer.println(s);
 	}
 
