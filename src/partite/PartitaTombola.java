@@ -19,14 +19,18 @@ public class PartitaTombola implements Runnable{
 	private boolean terminato;
 
 	public PartitaTombola(ArrayList<GiocatoreTombola> giocatori, int numPartita){
+		System.out.println("partita creata");
 		terminato = false;
 		this.numPartita = numPartita;
 		tabellone = new Tabellone();
 		this.giocatori = giocatori;
 		ipt = InfoPartitaTombola.getInstance();
+		vincite = new boolean[5];
 		for(int i = 0; i < 5;i++)
 			vincite[i] = true;
+		System.out.println("utenti presenti:");
 		for(int i = 0; i< giocatori.size();i++){
+			System.out.println(giocatori.get(i).getUtente().getUsername());
 			SituazioneTombola s = new SituazioneTombola(tabellone,giocatori.get(i),vincite,numPartita);
 			ipt.addUtente(s);
 		}

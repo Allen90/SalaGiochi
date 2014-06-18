@@ -47,7 +47,7 @@ public class ThreadLobbyTombola implements Runnable{
 		for(int i = 0;i< pt.get(numPartita).getGiocatori().size();i++)
 			if(pt.get(numPartita).getGiocatori().get(i).getUtente().getUsername().equals(username))
 				pt.get(numPartita).getGiocatori().get(i).getCartelle().get(indiceCartella).rigaVinta(indiceRiga);
-		
+
 		if(tipoVittoria == 6)
 			pt.get(numPartita).setFinito();
 		return ok;
@@ -55,18 +55,24 @@ public class ThreadLobbyTombola implements Runnable{
 
 	public void run(){
 		while(true){
-			if(numUtentiLobby() >1){
-				try {
-					Thread.sleep(30000);
-					task = new PartitaTombola(getUtenti(),pt.size());
-					Thread t = new Thread(task);
-					t.start();
-					pt.add(task);
-					svuotaLobbyTombola();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			int n = numUtentiLobby();
+			System.out.println(n);
+			//System.out.println("utenti presenti:" + numUtentiLobby());
+			if(n > 1){
+				System.out.println("qui in lobby con piu' di una persona");
+				//				try {
+				//Thread.sleep(3000);
+				System.out.println("sto per creare la partita");
+				task = new PartitaTombola(getUtenti(),pt.size());
+				Thread t = new Thread(task);
+				pt.add(task);
+				t.start();
+
+				svuotaLobbyTombola();
+				//				} catch (InterruptedException e) {
+				//					// TODO Auto-generated catch block
+				//					e.printStackTrace();
+				//				}
 			}
 		}
 	}

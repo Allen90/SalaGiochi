@@ -35,6 +35,7 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 	public void svuotaLobbyRubaMazzo(){
 		for(int i = 0;i< utenti.size();i++)
 			utenti.remove(i);
+		//utenti.removeAll(utenti);
 	}
 
 	public void addUserLobbyRubaMazzo(Utente c){
@@ -86,13 +87,14 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 			if(numUtentiLobby() > 1){
 				try {
 					Thread.sleep(30000);
+					System.out.println("Sto creando la partita");
 					task = new PartitaRubaMazzo(getLobbyRubaMazzo(),partite.size());
 					Thread t = new Thread(task);
-					t.start();
 					partite.add(task);
-					svuotaLobbyRubaMazzo();
+					t.start();
+					//svuotaLobbyRubaMazzo();
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					//System.out.print("impossibile creare la partita");
 				}
 			}
 

@@ -62,19 +62,28 @@ public class TaskController {
 
 
 	public boolean giocoTombola(Utente utente, int numCartelle) throws EccezioneUtente{
+		System.out.println("ricevuta rchiesta di gioco da utente");
 		boolean ok;
 		if(db.getUtente(utente.getUsername()).getCrediti()<100)
 			ok = false;
 		else{
+			System.out.println("sto creando le cartelle dell'utente" + numCartelle);
 			ok = true;
 			ArrayList<Tabella> cartelle = new ArrayList<Tabella>();
 			for(int i = 0; i< numCartelle;i++){
+				
 				Tabella c = new Tabella();
+				System.out.println("cartella creata");
 				cartelle.add(c);
+				System.out.println("cartella aggiunta all'array list");
 			}
-
+			System.out.println("sto per creare il giocatore tombola");
 			gt = new GiocatoreTombola(cartelle,utente);
+			System.out.println("giocatore tombola creato");
+			System.out.println("sto per aggiungere il giocatore alla lobby");
 			lt.addUserLobbyTomb(gt);
+			System.out.println("Giocatore aggiunto nella lobby");
+			System.out.println("giocatori nella lobby"+lt.numUtentiLobby());
 		}
 		return ok;
 	}
