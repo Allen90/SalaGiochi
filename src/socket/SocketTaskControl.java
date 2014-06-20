@@ -19,6 +19,7 @@ import rubamazzo.Mossa;
 import rubamazzo.MossaSocket;
 import rubamazzo.SituazioneRubamazzo;
 import slot.Rollata;
+import start.UtentiLoggati;
 import taskController.TaskController;
 import tombola.SituazioneTombola;
 import tombola.Vincita;
@@ -39,6 +40,7 @@ public class SocketTaskControl implements Runnable{
 	private TaskController tc;
 	private ConnessioneDB db;
 	private String stringaClient;
+	private UtentiLoggati l;
 
 	public SocketTaskControl(Socket client) throws IOException{
 		this.client = client;
@@ -47,6 +49,7 @@ public class SocketTaskControl implements Runnable{
 		continua = true;
 		reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
 		writer = new PrintWriter(client.getOutputStream(), true);
+		l = UtentiLoggati.getIstance();
 	}
 	@Override
 	public void run(){
@@ -103,7 +106,7 @@ public class SocketTaskControl implements Runnable{
 					aggRubamazzo();
 					break;
 				}
-				case "TERMINA":{
+				case "LOGOUT":{
 					termina();
 					break;
 				}
@@ -127,6 +130,10 @@ public class SocketTaskControl implements Runnable{
 
 
 	}
+	
+	public void chiudi(){
+		continua = false;
+	}
 
 	public void giocoRubaMazzo() throws EccezioneUtente{
 		boolean valido;
@@ -144,15 +151,23 @@ public class SocketTaskControl implements Runnable{
 	}
 
 	public void termina(){
-		continua = tc.termina();
+		continua = tc.termina(utente.getUsername());
 	}
 
 	public void login(String username,String password) throws EccezioneClassificaVuota{
 		boolean valido = db.controlloUtente(username,password);
 		int posizione = 0;
-
-		if(valido){
+		boolean ok = false;
+		
+		for(int i=0;i< l.getLoggati().size();i++){
+			if(l.getLoggati().get(i).equals(username)){
+				ok = false;
+			}
+		}
+		
+		if(valido && ok){
 			db.aggiornaUltimoLogin(username);
+			l.addLoggato(utente.getUsername());
 			try {
 				utente = db.getUtente(username);
 			} catch (EccezioneUtente e) {
@@ -188,6 +203,7 @@ public class SocketTaskControl implements Runnable{
 				}
 				db.addUtente(utente);
 				utente = db.getUtente(username);
+				l.addLoggato(utente.getUsername());
 				Utente test = db.getUtente(username);
 				ArrayList<Utente> classifica = db.getClassifica(false);
 				for(int i=0; i<classifica.size();i++)

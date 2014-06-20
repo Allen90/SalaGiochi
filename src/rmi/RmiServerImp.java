@@ -9,6 +9,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -26,40 +27,35 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 	private Thread serverThread;
 	private ConnessioneDB db;
 	private UtentiLoggati l;
-	private Object lock;
+	private ArrayList<RmiTaskControlImp> arrayController;
 	private boolean continua;
 
 	public RmiServerImp() throws RemoteException{
 		db = ConnessioneDB.getInstance();
 		l = UtentiLoggati.getIstance();
-		lock = null;
 	}
 	
-	public void setFinito(){
+	public void chiudi(){
+		for(int i = 0 ; i < arrayController.size();i++)
+			arrayController.get(i).chiudi();
 		continua = false;
 	}
 
 	public  void run() {
+		arrayController = new ArrayList<RmiTaskControlImp>();
 		continua = true;
 		try {
-			// Creo il SecurityManager
 			if (System.getSecurityManager() == null)
 				System.setSecurityManager(new SecurityManager());
-
-			// Nuova istanza del server
 			RmiServer stub = new RmiServerImp();
-
-			// Bind dell'oggetto remoro nel registry
 			Registry registry = LocateRegistry.getRegistry(host);
 			System.out.println("qui");
 			registry.rebind(url, stub);
 			System.out.println("qui");
 			System.out.println("Modalità RMI avviata.");
-			//Attendo il comando di spegimento del Server.
 			while (continua){		
 				
 			}
-			// Effettuo l'unbind della classe remota
 			registry.unbind(url);			
 			System.out.println("Modalita RMI terminata.");
 
@@ -72,20 +68,21 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 	public RmiTaskControl login(String username,String password) throws RemoteException, EccezioneUtente{
 		System.out.println("richiesta login rmi");
 		RmiTaskControlImp server = null;
-
+		boolean ok = true;
 		boolean valido = db.controlloUtente(username,password);
-
-		if(valido){
+		for(int i=0;i< l.getLoggati().size();i++){
+			if(l.getLoggati().get(i).equals(username)){
+				ok = false;
+			}
+		}
+		if(valido && ok){
 			Utente user = db.getUtente(username);
 			System.out.println("data login" + user.getUltimaVisita());
 			server = new RmiTaskControlImp(user);
 			serverThread = new Thread(server);
 			serverThread.start();
-
-//			synchronized (lock) {
-				//Aggiungo il client ai client connessi
-				l.addLoggato(user.getUsername());
-//			}
+			arrayController.add(server);
+			l.addLoggato(user.getUsername());
 			return server;
 		}
 		return null;
@@ -100,12 +97,9 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 			Date ultimaVisita = new Date();
 			Utente u = new Utente(nome,cognome,username,password,0,ultimaVisita);
 			db.addUtente(u);
-			//				synchronized (lock) {
-			//					//Aggiungo il client ai client connessi
-			//					l.addLoggato(u.getUsername());
-			//				}
 			u = db.getUtente(username);
 			server = new RmiTaskControlImp(u);
+			arrayController.add(server);
 			serverThread = new Thread(server);
 			serverThread.start();
 			return server;

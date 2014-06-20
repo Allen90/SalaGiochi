@@ -12,7 +12,8 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 	private PartitaRubaMazzo task;
 	private static ThreadLobbyRubaMazzo lrm;
 	private ArrayList<PartitaRubaMazzo> partite;
-
+	private boolean continua;
+	
 	private ThreadLobbyRubaMazzo(){
 		utenti = new ArrayList<Utente>();
 		partite = new ArrayList<PartitaRubaMazzo>();
@@ -80,8 +81,14 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 		return ok;
 	}
 
+	
+	public void chiudi(){
+		continua = false;
+	}
+	
 	public void run(){
-		while(true){
+		continua = true;
+		while(continua){
 			int n = numUtentiLobby();
 			while(true){
 				try {

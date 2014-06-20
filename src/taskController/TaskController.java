@@ -12,6 +12,7 @@ import rubamazzo.Mossa;
 import rubamazzo.SituazioneRubamazzo;
 import slot.Rollata;
 import slot.Slot;
+import start.UtentiLoggati;
 import tombola.GiocatoreTombola;
 import tombola.SituazioneTombola;
 import tombola.Tabella;
@@ -28,7 +29,7 @@ public class TaskController {
 	private Slot s;
 	private InfoPartitaTombola ipt;
 	private InfoPartitaRubaMazzo iprm;
-
+	private UtentiLoggati l;
 
 	public TaskController(){
 		db = ConnessioneDB.getInstance();
@@ -36,9 +37,15 @@ public class TaskController {
 		lrm = ThreadLobbyRubaMazzo.getInstance();
 		ipt = InfoPartitaTombola.getInstance();
 		iprm = InfoPartitaRubaMazzo.getInstance();
+		l = UtentiLoggati.getIstance();
 	}
 
-	public boolean termina(){
+	public boolean termina(String username){
+		for(int i=0;i< l.getLoggati().size();i++){
+			if(l.getLoggati().get(i).equals(username)){
+				l.rimuovi(username);
+			}
+		}
 		return false;
 	}
 

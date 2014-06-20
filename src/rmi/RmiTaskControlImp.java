@@ -40,6 +40,10 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 		}
 		
 	}
+	
+	public void chiudi(){
+		continua = false;
+	}
 
 	@Override
 	public Rollata rolla() throws EccezioneUtente {
@@ -67,10 +71,7 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 		return tc.aggClass(true);
 	}
 
-	@Override
-	public void termina() {
-		continua = tc.termina();
-	}
+
 	
 	public boolean giocoTombola(int numCartelle) throws EccezioneUtente{
 		return tc.giocoTombola(utente, numCartelle);
@@ -95,6 +96,13 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 		InfoHome ih = new InfoHome(utente.getNome(),utente.getCognome(),utente.getCrediti(),posizione, utente.getUltimaVisita());
 		return ih;
 	}
+
+	@Override
+	public boolean logout() throws EccezioneUtente, RemoteException {
+		continua = tc.termina(utente.getUsername());
+		return continua;
+	}
+
 
 	
 

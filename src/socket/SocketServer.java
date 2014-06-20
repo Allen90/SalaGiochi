@@ -2,12 +2,22 @@ package socket;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class SocketServer implements Runnable{
 	private static final int port = 4445;
-
-	@Override
+	private boolean continua;
+	private ArrayList<SocketTaskControl> arrayController;
+	
+	public void chiudi(){
+		for(int i = 0; i< arrayController.size();i++)
+			arrayController.get(i).chiudi();
+		continua = false;
+	}
+	
 	public void run() {
+		arrayController = new ArrayList<SocketTaskControl>();
+		continua = true;
 		ServerSocket serverSocket = null;
 		Socket clientSocket = null;
 		try {
@@ -19,7 +29,7 @@ public class SocketServer implements Runnable{
 
 		System.out.println("Mi metto in ascolto");
 		try {
-			while(true){
+			while(continua){
 				
 				clientSocket = serverSocket.accept();
 				System.out.println("nuova connessione client");
@@ -27,6 +37,7 @@ public class SocketServer implements Runnable{
 				System.out.println("creo thread per il client connesso");
 				SocketTaskControl task = new SocketTaskControl(clientSocket);
 				Thread t = new Thread(task);
+				arrayController.add(task);
 				t.start();
 			}
 

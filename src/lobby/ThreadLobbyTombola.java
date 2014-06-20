@@ -10,6 +10,7 @@ public class ThreadLobbyTombola implements Runnable{
 	private PartitaTombola task;
 	private ArrayList<PartitaTombola> pt; 
 	private ArrayList<GiocatoreTombola> giocatori;
+	private boolean continua;
 
 
 	private ThreadLobbyTombola(){
@@ -52,9 +53,15 @@ public class ThreadLobbyTombola implements Runnable{
 		return ok;
 	}
 
+	
+	public void chiudi(){
+		continua = false;
+	}
+	
 	public void run(){
+		continua = true;
 		int n = numUtentiLobby();
-		while(true){
+		while(continua){
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e1) {

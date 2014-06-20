@@ -5,12 +5,18 @@ import interfacciaDB.ConnessioneDB;
 
 public class AggiornaCrediti implements Runnable{
 	private ConnessioneDB db;
-
+	private boolean continua;
 	public AggiornaCrediti(){
 		db = ConnessioneDB.getInstance();
+		continua = true;
 	}
+	
+	public void chiudi(){
+		continua = false;
+	}
+	
 	public void run() {
-		while(true){
+		while(continua){
 		try {
 			Thread.sleep(3600000);
 		} catch (InterruptedException e) {
