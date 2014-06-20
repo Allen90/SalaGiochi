@@ -33,9 +33,7 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 	}
 
 	public void svuotaLobbyRubaMazzo(){
-		for(int i = 0;i< utenti.size();i++)
-			utenti.remove(i);
-		//utenti.removeAll(utenti);
+		utenti.removeAll(utenti);
 	}
 
 	public void addUserLobbyRubaMazzo(Utente c){
@@ -44,38 +42,38 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 
 	public boolean controllaMossa(String username,int numPartita,Mossa m){
 		boolean ok = false;
-			for(int j = 0; j < partite.get(numPartita).getGiocatori().size();j++){
-				if(partite.get(numPartita).getGiocatori().get(j).getUtente().getUsername().equals(username)){
-					
-					int tipo = m.getTipoMossa();
-					switch(tipo){
-					case 0: {partite.get(numPartita).getTavolo().daGiocatoreABanco(m.getCartaGiocata(),username);ok=true;break;}
-					case 1:{ try{
-						partite.get(numPartita).getTavolo().daBancoAGiocatore(m.getCartaGiocata(),m.getCartaBersaglio(),username);
-					}
-					catch(EccezioneRubamazzo e){
-						ok = false;
-					}
-					break;
-					}
-					case 2:{ try{
-						partite.get(numPartita).getTavolo().daBancoAGiocatore(m.getCartaGiocata(),m.getCarteBersaglio(),username);
-					}
-					catch(EccezioneRubamazzo e){
-						ok = false;
-					}
-					break;
-					}
-					case 3: { try{
-						partite.get(numPartita).getTavolo().daGiocatoreAGiocatore(username,m.getCartaGiocata(),m.getGiocatoreBersaglio());
-					}
-					catch(EccezioneRubamazzo e){
-						ok = false;
-					}
-					break;
-					}
-					}
+		for(int j = 0; j < partite.get(numPartita).getGiocatori().size();j++){
+			if(partite.get(numPartita).getGiocatori().get(j).getUtente().getUsername().equals(username)){
+
+				int tipo = m.getTipoMossa();
+				switch(tipo){
+				case 0: {partite.get(numPartita).getTavolo().daGiocatoreABanco(m.getCartaGiocata(),username);ok=true;break;}
+				case 1:{ try{
+					partite.get(numPartita).getTavolo().daBancoAGiocatore(m.getCartaGiocata(),m.getCartaBersaglio(),username);
 				}
+				catch(EccezioneRubamazzo e){
+					ok = false;
+				}
+				break;
+				}
+				case 2:{ try{
+					partite.get(numPartita).getTavolo().daBancoAGiocatore(m.getCartaGiocata(),m.getCarteBersaglio(),username);
+				}
+				catch(EccezioneRubamazzo e){
+					ok = false;
+				}
+				break;
+				}
+				case 3: { try{
+					partite.get(numPartita).getTavolo().daGiocatoreAGiocatore(username,m.getCartaGiocata(),m.getGiocatoreBersaglio());
+				}
+				catch(EccezioneRubamazzo e){
+					ok = false;
+				}
+				break;
+				}
+				}
+			}
 		}
 		if(ok == true)
 			partite.get(numPartita).setMossaFinita(true);
@@ -84,18 +82,35 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 
 	public void run(){
 		while(true){
-			if(numUtentiLobby() > 1){
+			int n = numUtentiLobby();
+			while(true){
 				try {
-					Thread.sleep(30000);
-					System.out.println("Sto creando la partita");
+					Thread.sleep(2000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				System.out.println(n);
+				if(n > 0){
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					task = new PartitaRubaMazzo(getLobbyRubaMazzo(),partite.size());
 					Thread t = new Thread(task);
 					partite.add(task);
 					t.start();
-					//svuotaLobbyRubaMazzo();
-				} catch (InterruptedException e) {
-					//System.out.print("impossibile creare la partita");
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					svuotaLobbyRubaMazzo();
 				}
+				n = numUtentiLobby();
 			}
 
 		}

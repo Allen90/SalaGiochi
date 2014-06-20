@@ -19,8 +19,11 @@ public class PartitaRubaMazzo implements Runnable{
 	private ConnessioneDB db;
 
 	public PartitaRubaMazzo(ArrayList<Utente> utenti,int numPartita){
-		for(int i = 0; i< utenti.size();i++){
-			GiocatoreRubamazzo u = new GiocatoreRubamazzo(utenti.get(i));
+		ArrayList<Utente> temp = new ArrayList<>();
+		giocatori = new ArrayList<>();
+		temp.addAll(utenti);
+		for(int i = 0; i< temp.size();i++){
+			GiocatoreRubamazzo u = new GiocatoreRubamazzo(temp.get(i));
 			giocatori.add(u);
 		}
 		trm = new TavoloRubamazzo(giocatori);
