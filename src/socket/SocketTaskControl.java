@@ -59,10 +59,6 @@ public class SocketTaskControl implements Runnable{
 
 				stringaClient = reader.readLine();
 				String azione = Decoder.getTipoAzione(stringaClient);
-//				if(!azione.equals("LOGIN") && !azione.equals("REGITRA")){
-//					System.out.println("sto aggiornando l'utente");
-//					utente = db.getUtente(utente.getUsername());
-//				}
 				switch(azione){
 				case "LOGIN":{
 					Login l = Decoder.serverLogin(stringaClient);
@@ -80,6 +76,7 @@ public class SocketTaskControl implements Runnable{
 					break;
 				}
 				case "VINTOTOMBOLA":{
+					System.out.println("ricevuto dal client richiesta di vincita tombola");
 					Vincita v = Decoder.serverVincitaTombola(stringaClient);
 					vintoTombola(v.getNumPartita(),v.getTipoVincita(),v.getIndiceCartella(),v.getIndiceRiga());
 					break;

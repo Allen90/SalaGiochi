@@ -48,6 +48,7 @@ public class TaskController {
 	}
 
 	public boolean vintoTombola(Utente utente,int numPartita,int tipoVittoria, int indiceCartella,int indiceRiga){
+		System.out.println("sto mandando alla lobby la richiesta di vincita");
 		return lt.aggiornaVincite(utente.getUsername(), numPartita, tipoVittoria, indiceCartella, indiceRiga);
 	}
 

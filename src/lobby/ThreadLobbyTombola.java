@@ -42,13 +42,13 @@ public class ThreadLobbyTombola implements Runnable{
 
 	public boolean aggiornaVincite(String username,int numPartita,int tipoVittoria, int indiceCartella,int indiceRiga){
 		boolean ok = false;
-		ok = pt.get(numPartita).setVittoria(tipoVittoria);
-		for(int i = 0;i< pt.get(numPartita).getGiocatori().size();i++)
+		System.out.println("ricevuto vinto tombola da: "+username);
+		ok = pt.get(numPartita).setVittoria(tipoVittoria-1);
+		for(int i = 0;i< pt.get(numPartita).getGiocatori().size();i++){
 			if(pt.get(numPartita).getGiocatori().get(i).getUtente().getUsername().equals(username))
 				pt.get(numPartita).getGiocatori().get(i).getCartelle().get(indiceCartella).rigaVinta(indiceRiga);
-
-		if(tipoVittoria == 6)
-			pt.get(numPartita).setFinito();
+		}
+		System.out.println("rispondo al client con: "+ok);
 		return ok;
 	}
 
@@ -56,14 +56,13 @@ public class ThreadLobbyTombola implements Runnable{
 		int n = numUtentiLobby();
 		while(true){
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(500);
 			} catch (InterruptedException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			System.out.println(n);
 			//System.out.println("utenti presenti:" + numUtentiLobby());
-			if(n > 1){
+			if(n > 0){
 				System.out.println("qui in lobby con piu' di una persona");
 				//				try {
 				try {

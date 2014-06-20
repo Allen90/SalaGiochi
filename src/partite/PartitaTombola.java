@@ -19,11 +19,12 @@ public class PartitaTombola implements Runnable{
 	private boolean terminato;
 
 	public PartitaTombola(ArrayList<GiocatoreTombola> giocatori, int numPartita){
-		System.out.println("partita creata");
+		System.out.println("partita creata" + numPartita);
 		terminato = false;
 		this.numPartita = numPartita;
 		tabellone = new Tabellone();
-		this.giocatori = giocatori;
+		this.giocatori = new ArrayList<>();
+		this.giocatori.addAll(giocatori);
 		ipt = InfoPartitaTombola.getInstance();
 		vincite = new boolean[5];
 		for(int i = 0; i < 5;i++)
@@ -48,7 +49,7 @@ public class PartitaTombola implements Runnable{
 			
 			ok = true;
 		}
-		
+		controlloFinito();
 		return ok;
 		
 	}
@@ -57,14 +58,21 @@ public class PartitaTombola implements Runnable{
 		return giocatori;
 	}
 	
-	public void setFinito(){
-		terminato = true;
+	public void controlloFinito(){
+		int cont = 0;
+		for(int i = 0;i< 5;i++){
+			if(vincite[i] == false)
+				cont++;
+		}
+		if(cont == 5)
+			terminato = true;
 	}
 
 	@Override
 	public void run() {
-
+		
 		while(!tabellone.terminato() && terminato == false){
+			//System.out.println("Ho il ciclo");
 			try {
 				Thread.sleep(4000);
 			} catch (InterruptedException e) {
@@ -72,13 +80,22 @@ public class PartitaTombola implements Runnable{
 				e.printStackTrace();
 			}
 			int estratto = tabellone.estrai();
+			//System.out.println(estratto);
+//			System.out.println(giocatori.size());
 			for(int i=0;i<giocatori.size();i++){
-				for(int j=0;j<giocatori.get(i).getNCartelle();j++)
+				//System.out.println(giocatori.get(i).getNCartelle());
+				for(int j=0;j<giocatori.get(i).getNCartelle();j++){
+					//System.out.println("giocatore " + i + " cartella "+j);
 					giocatori.get(i).controllaEstratto(estratto,j);
+					//giocatori.get(i).getCartelle().get(j).stampa();
+				}
+				ipt.getUtente(giocatori.get(i).getUtente().getUsername()).aggiornaSituazione(tabellone, giocatori.get(i), vincite);
+				System.out.println("situazione aggiornata dopo l'estrazione");
 			}
 
 
 		}
+		System.out.println("anto bananaro");
 
 	}
 }
