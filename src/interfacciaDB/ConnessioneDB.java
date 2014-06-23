@@ -349,7 +349,7 @@ public class ConnessioneDB {
     	else return posizione;
     }
     
-    public boolean aggiornaPeriodico() throws EccezioneClassificaVuota{
+    public boolean aggiornaPeriodico(int ore) throws EccezioneClassificaVuota{
     	loggati = UtentiLoggati.getIstance();
     	ConnessioneDB cdb = ConnessioneDB.getInstance();
     	PreparedStatement ps = null;
@@ -379,9 +379,9 @@ public class ConnessioneDB {
         	for(int i = 0; i < utentiDB.size(); i++){
         		ps.setString(2, utentiDB.get(i).getUsername());
         		if(isOnline[i])
-        			ps.setInt(1, utentiDB.get(i).getCrediti()+INC_CREDITI_ONLINE);
+        			ps.setInt(1, utentiDB.get(i).getCrediti()+(INC_CREDITI_ONLINE * ore));
         		else
-        			ps.setInt(1, utentiDB.get(i).getCrediti()+INC_CREDITI_OFFLINE);
+        			ps.setInt(1, utentiDB.get(i).getCrediti()+(INC_CREDITI_OFFLINE * ore));
         		ps.execute();
         	}
     	}catch(EccezioneClassificaVuota e){
