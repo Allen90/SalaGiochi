@@ -25,7 +25,7 @@ public class AggiornaCrediti implements Runnable{
 		}
 		
 		try {
-			db.aggiornaPeriodico();
+			db.aggiornaPeriodico(1);
 		} catch (EccezioneClassificaVuota e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

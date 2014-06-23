@@ -4,6 +4,8 @@ package start;
 
 // aggiornare tombola con aggiornamento crediti e calcolo premi
 
+import interfacciaDB.ConnessioneDB;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -13,9 +15,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Date;
 
 import javax.swing.JLabel;
@@ -34,6 +40,9 @@ public class StartServerGUI {
 	private static AggiornaCrediti ag;
 	private static ThreadLobbyTombola lt;
 	private static ThreadLobbyRubaMazzo lrm;
+	private static PrintWriter writer;
+	private static BufferedReader reader;
+	private static ConnessioneDB db;
 
 	/**
 	 * Launch the application.
@@ -42,6 +51,15 @@ public class StartServerGUI {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					db = ConnessioneDB.getInstance();
+					reader = new BufferedReader(new FileReader("src/chiusuraServer.txt"));
+					writer = new PrintWriter(new FileWriter("src/chiusuraServer.txt"));
+					String dataShutdown = reader.readLine();
+					if(dataShutdown != null){
+						long oreChiusura = Long.parseLong(dataShutdown)/3600000;
+						int ore = (int)oreChiusura;
+						db.aggiornaPeriodico(ore);
+					}
 					Thread t1,t2,t3,t4,t5;
 					ssocket = new SocketServer();
 					srmi = new RmiServerImp();
@@ -74,27 +92,19 @@ public class StartServerGUI {
 	public StartServerGUI() {
 		initialize();
 	}
-	
-	
+
+
 	public void chiusuraServer(){
-		
+
 		ssocket.chiudi();
 		srmi.chiudi();
 		ag.chiudi();
 		lt.chiudi();
 		lrm.chiudi();
-		
-		Date d = new Date();
-		try {
-			FileOutputStream file = new FileOutputStream("file.txt");
-			PrintStream Output = new PrintStream(file);
-			Output.println(d);
-			
 
-		} catch (IOException e1) {
-			System.out.println("Errore: " + e1);
-		}
-		frame.dispose();
+		Date d = new Date();
+		System.out.println(""+d.getTime());
+		System.exit(0);
 	}
 
 	/**
@@ -104,12 +114,12 @@ public class StartServerGUI {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		
+
 		this.addWindowListener(new WindowAdapter() {
-			   public void windowClosing(WindowEvent evt) {
-			    chiusuraServer();
-			   }
-			 });
+			public void windowClosing(WindowEvent evt) {
+				chiusuraServer();
+			}
+		});
 		JButton stopServer = new JButton("Stop Server");
 		stopServer.setBounds(88, 183, 270, 25);
 		stopServer.addActionListener(new ActionListener() {
@@ -128,6 +138,6 @@ public class StartServerGUI {
 
 	private void addWindowListener(WindowAdapter windowAdapter) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

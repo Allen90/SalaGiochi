@@ -13,7 +13,7 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 	private static ThreadLobbyRubaMazzo lrm;
 	private ArrayList<PartitaRubaMazzo> partite;
 	private boolean continua;
-	
+
 	private ThreadLobbyRubaMazzo(){
 		utenti = new ArrayList<Utente>();
 		partite = new ArrayList<PartitaRubaMazzo>();
@@ -81,44 +81,43 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 		return ok;
 	}
 
-	
+
 	public void chiudi(){
 		continua = false;
 	}
-	
+
 	public void run(){
 		continua = true;
 		while(continua){
 			int n = numUtentiLobby();
-			while(true){
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				System.out.println(n);
-				if(n > 0){
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					task = new PartitaRubaMazzo(getLobbyRubaMazzo(),partite.size());
-					Thread t = new Thread(task);
-					partite.add(task);
-					t.start();
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					svuotaLobbyRubaMazzo();
-				}
-				n = numUtentiLobby();
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
+			System.out.println(n);
+			if(n > 0){
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				task = new PartitaRubaMazzo(getLobbyRubaMazzo(),partite.size());
+				Thread t = new Thread(task);
+				partite.add(task);
+				t.start();
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				svuotaLobbyRubaMazzo();
+			}
+			n = numUtentiLobby();
+
 
 		}
 
