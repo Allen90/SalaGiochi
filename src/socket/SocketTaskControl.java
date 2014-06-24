@@ -24,6 +24,7 @@ import taskController.TaskController;
 import tombola.SituazioneTombola;
 import tombola.Vincita;
 import userModel.EntryClassifica;
+import userModel.InfoHome;
 import userModel.Login;
 import userModel.Registrazione;
 import userModel.Utente;
@@ -124,6 +125,11 @@ public class SocketTaskControl implements Runnable{
 				case "GIOCORUBAMAZZO":{
 					giocoRubaMazzo();
 				}
+				
+				case "AGGCREDITI":{
+					aggCrediti();
+				}
+				
 				}
 			} catch (IOException | EccezioneUtente | EccezioneClassificaVuota e) {
 				// TODO Auto-generated catch block
@@ -135,6 +141,12 @@ public class SocketTaskControl implements Runnable{
 		}
 
 
+	}
+	
+	
+	public void aggCrediti() throws EccezioneUtente{
+		utente = db.getUtente(utente.getUsername());
+		writer.println(Encoder.serverAggCrediti(utente.getCrediti()));
 	}
 	
 	public void chiudi(){
@@ -237,7 +249,7 @@ public class SocketTaskControl implements Runnable{
 		writer.println(Encoder.serverMossaRubamazzo(ok));
 	}
 
-	public void vintoTombola(int numPartita,int tipoVittoria,int indiceCartella, int indiceRiga){
+	public void vintoTombola(int numPartita,int tipoVittoria,int indiceCartella, int indiceRiga) throws EccezioneUtente{
 		boolean valido = tc.vintoTombola(utente, numPartita, tipoVittoria, indiceCartella, indiceRiga);
 		String s = Encoder.serverResponseVintoTombola(valido);
 		writer.println(s);

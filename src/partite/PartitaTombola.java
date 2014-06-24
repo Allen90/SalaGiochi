@@ -23,6 +23,11 @@ public class PartitaTombola implements Runnable{
 	@SuppressWarnings("unused")
 	private int numPartita;
 	private boolean terminato;
+	private int premioAmbo;
+	private int premioTerna;
+	private int premioQuaterna;
+	private int premioCinquina;
+	private int premioTombola;
 
 	public PartitaTombola(ArrayList<GiocatoreTombola> giocatori, int numPartita){
 		System.out.println("partita creata" + numPartita);
@@ -41,8 +46,43 @@ public class PartitaTombola implements Runnable{
 			SituazioneTombola s = new SituazioneTombola(tabellone,giocatori.get(i),vincite,numPartita);
 			ipt.addUtente(s);
 		}
+		int cartelleTotali = 0;
+		for(int i = 0; i< giocatori.size();i++){
+			cartelleTotali = giocatori.get(i).getNCartelle();
+		}
+		
+		int premioTot = cartelleTotali*20;
+		
+		premioAmbo = premioTot*5/100;
+		premioTerna = premioTot*10/100;
+		premioQuaterna = premioTot*15/100;
+		premioCinquina = premioTot*20/100;
+		premioTombola = premioTot*50/100;
+		
 	}
 
+	
+	public int getPremioAmbo(){
+		return premioAmbo;
+	}
+	
+	public int getPremioTerna(){
+		return premioTerna;
+	}
+	
+	public int getPremioQuaterna(){
+		return premioQuaterna;
+	}
+	
+	public int getPremioCinquina(){
+		return premioCinquina;
+	}
+	
+	public int getPremioTombola(){
+		return premioTombola;
+	}
+	
+	
 	public boolean setVittoria(int tipoVittoria){
 		boolean ok = false;
 		if(vincite[tipoVittoria] == false)

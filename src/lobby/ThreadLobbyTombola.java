@@ -1,7 +1,10 @@
 package lobby;
 
+import interfacciaDB.ConnessioneDB;
+
 import java.util.ArrayList;
 
+import eccezioni.EccezioneUtente;
 import partite.PartitaTombola;
 import tombola.GiocatoreTombola;
 
@@ -21,9 +24,10 @@ public class ThreadLobbyTombola implements Runnable{
 	private ArrayList<PartitaTombola> pt; 
 	private ArrayList<GiocatoreTombola> giocatori;
 	private boolean continua;
-
+	private ConnessioneDB db;
 
 	private ThreadLobbyTombola(){
+		db = ConnessioneDB.getInstance();
 		giocatori = new ArrayList<GiocatoreTombola>();
 		pt = new ArrayList<PartitaTombola>();
 
@@ -51,7 +55,7 @@ public class ThreadLobbyTombola implements Runnable{
 		giocatori.add(g);
 	}
 
-	public boolean aggiornaVincite(String username,int numPartita,int tipoVittoria, int indiceCartella,int indiceRiga){
+	public boolean aggiornaVincite(String username,int numPartita,int tipoVittoria, int indiceCartella,int indiceRiga) throws EccezioneUtente{
 		boolean ok = false;
 		System.out.println("ricevuto vinto tombola da: "+username);
 		ok = pt.get(numPartita).setVittoria(tipoVittoria-1);
@@ -59,6 +63,15 @@ public class ThreadLobbyTombola implements Runnable{
 			if(pt.get(numPartita).getGiocatori().get(i).getUtente().getUsername().equals(username))
 				pt.get(numPartita).getGiocatori().get(i).getCartelle().get(indiceCartella).rigaVinta(indiceRiga);
 		}
+		int premio = 0;
+		switch(tipoVittoria){
+		case 1:{premio = pt.get(numPartita).getPremioAmbo();break;}
+		case 2:{premio = pt.get(numPartita).getPremioTerna();break;}
+		case 3:{premio = pt.get(numPartita).getPremioQuaterna();break;}
+		case 4:{premio = pt.get(numPartita).getPremioCinquina();break;}
+		case 5:{premio = pt.get(numPartita).getPremioTombola();break;}
+		}
+		db.aggiornaCrediti(premio, 0, username);
 		System.out.println("rispondo al client con: "+ok);
 		return ok;
 	}

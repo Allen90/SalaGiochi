@@ -87,7 +87,7 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 		return tc.mossaRubaMazzo(utente, m, numPartita);
 	}
 	
-	public boolean vintoTombola(int numPartita,int tipoVittoria,int indiceCartella, int indiceRiga){
+	public boolean vintoTombola(int numPartita,int tipoVittoria,int indiceCartella, int indiceRiga) throws EccezioneUtente{
 		return tc.vintoTombola(utente, numPartita, tipoVittoria, indiceCartella, indiceRiga);
 	}
 

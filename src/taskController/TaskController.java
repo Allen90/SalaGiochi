@@ -83,9 +83,10 @@ public class TaskController {
 	 * @param indiceCartella
 	 * @param indiceRiga
 	 * @return boolean
+	 * @throws EccezioneUtente 
 	 */
 
-	public boolean vintoTombola(Utente utente,int numPartita,int tipoVittoria, int indiceCartella,int indiceRiga){
+	public boolean vintoTombola(Utente utente,int numPartita,int tipoVittoria, int indiceCartella,int indiceRiga) throws EccezioneUtente{
 		System.out.println("sto mandando alla lobby la richiesta di vincita");
 		return lt.aggiornaVincite(utente.getUsername(), numPartita, tipoVittoria, indiceCartella, indiceRiga);
 	}
@@ -136,7 +137,9 @@ public class TaskController {
 			System.out.println("Giocatore aggiunto nella lobby");
 			System.out.println("giocatori nella lobby"+lt.numUtentiLobby());
 		}
+		db.aggiornaCrediti(0, numCartelle*20, utente.getUsername());
 		return ok;
+		
 	}
 	
 	/**
@@ -147,12 +150,13 @@ public class TaskController {
 	 */
 	public boolean giocoRubamazzo(Utente utente) throws EccezioneUtente{
 		boolean ok;
-		if(db.getUtente(utente.getUsername()).getCrediti()<100)
+		if(db.getUtente(utente.getUsername()).getCrediti()<200)
 			ok = false;
 		else{
 			ok = true;
 		lrm.addUserLobbyRubaMazzo(utente);
 		}
+		db.aggiornaCrediti(0, 20, utente.getUsername());
 		return ok;
 	}
 	
