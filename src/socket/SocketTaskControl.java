@@ -90,7 +90,7 @@ public class SocketTaskControl implements Runnable{
 					vintoTombola(v.getNumPartita(),v.getTipoVincita(),v.getIndiceCartella(),v.getIndiceRiga());
 					break;
 				}
-				case "MOSSARUBAMAZZO":{
+				case "MOSSA":{
 					MossaSocket m = Decoder.serverMossarubamazzo(stringaClient);
 					mossaRubamazzo(m.getMossa(),m.getNumPartita());
 					break;

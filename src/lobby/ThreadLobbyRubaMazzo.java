@@ -88,7 +88,7 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 			}
 		}
 		if(ok == true){
-			
+			System.out.println("MOSSA FINITA SETTATO A TRUE");
 			partite.get(numPartita).setMossaFinita(true);
 		}
 		return ok;
@@ -110,9 +110,9 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 				e1.printStackTrace();
 			}
 			System.out.println(n);
-			if(n > 0){
+			if(n > 1){
 				try {
-					Thread.sleep(3000);
+					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

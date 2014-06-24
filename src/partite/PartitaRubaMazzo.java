@@ -40,15 +40,20 @@ public class PartitaRubaMazzo implements Runnable{
 
 	public void aggiornaTurno(){
 		turno++;
-		if(turno>giocatori.size())
+		System.out.println("STO PER AGGIORNARE IL TURNO");
+		if(turno>giocatori.size()-1){
 			turno = 0;
+			System.out.println("TURNO AGGIORNATO :" + turno);
+			trm.daiCarte(giocatori);
+		}
+			
 		for(int i=0;i<giocatori.size();i++){
 			iprm.getUtente(giocatori.get(i).getUtente().getUsername()).aggiornaSituazione(giocatori.get(i), trm);
 			iprm.getUtente(giocatori.get(i).getUtente().getUsername()).setAbilitato(false);
 			if( i == turno)
 				iprm.getUtente(giocatori.get(i).getUtente().getUsername()).setAbilitato(true);
 		}
-
+		mossaFinita = false;
 	}
 
 
@@ -70,10 +75,15 @@ public class PartitaRubaMazzo implements Runnable{
 	}
 
 	public void run() {
-
 		while(!trm.isFinita()){
 			while(!mossaFinita()){
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
+			System.out.println("mossa finita, aggiorno il turno");
 			aggiornaTurno();
 		}
 		ArrayList<String> vincitori = trm.getVincitore();
@@ -97,6 +107,6 @@ public class PartitaRubaMazzo implements Runnable{
 				}
 		}
 
-		}
-
 	}
+
+}
