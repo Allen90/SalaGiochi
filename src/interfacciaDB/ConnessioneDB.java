@@ -18,6 +18,13 @@ import userModel.Utente;
 import eccezioni.EccezioneClassificaVuota;
 import eccezioni.EccezioneUtente;
 
+/**
+ * singleton che genstisce la connessione e le varie chiamate al database
+ * @author fritz
+ *
+ */
+
+
 public class ConnessioneDB {
 
 	private static Connection con = null;
@@ -76,14 +83,17 @@ public class ConnessioneDB {
     	}
     }
     
+    /**
+     * metodo per l'aggiunta di un nuovo utente all'interno del database
+     * @param utente
+     * @return boolean
+     * @throws ParseException
+     */
+    
     public boolean addUtente(Utente utente) throws ParseException{
     	ConnessioneDB cdb = null;
     	PreparedStatement ps = null;
     	boolean ok = true;
-		//DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzzz yyyy",Locale.ENGLISH);
-//		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
-//		String s = dateFormat.format(utente.getUltimaVisita());
-//		java.sql.Date data = dateFormat.parse(s);
     	try{
     		getUtente(utente.getUsername());
     		ok = false;
@@ -120,6 +130,13 @@ public class ConnessioneDB {
     	
     	return ok;
     }
+    
+    /**
+     * cerca nel database l'userame passato e restituisce l'utente corrispondente
+     * @param username
+     * @return Utente
+     * @throws EccezioneUtente
+     */
     
     public Utente getUtente(String username) throws EccezioneUtente{
     	ConnessioneDB cdb = ConnessioneDB.getInstance();
@@ -168,7 +185,12 @@ public class ConnessioneDB {
     	else return utente;
     }
     
-    
+    /**
+     * controlla se i valori di username e password passati, corrispondono a quelli all'interno del database
+     * @param username
+     * @param password
+     * @return boolean
+     */
     
     public boolean controlloUtente(String username, String password){    	
     	try{
@@ -182,6 +204,15 @@ public class ConnessioneDB {
     		return false;
     	}
     }
+    
+    /**
+     * aggiornamento dei crediti dell'utente passato con la spesa e il premio voluti
+     * @param premio
+     * @param spesa
+     * @param username
+     * @return boolean
+     * @throws EccezioneUtente
+     */
     
     public boolean aggiornaCrediti(int premio, int spesa, String username) throws EccezioneUtente{
     	ConnessioneDB cdb = ConnessioneDB.getInstance();

@@ -5,6 +5,16 @@ import java.util.ArrayList;
 import partite.PartitaTombola;
 import tombola.GiocatoreTombola;
 
+/**
+ * thread che gestisce la coda di persone che vogliono giocare a tombola, una volta che 
+ * sono presenti almeno 2 utenti, aspetta ancora 20 secondi e poi crea il thread che gestira' la partita con
+ * gli utenti attualmente in coda.
+ * La classe si occupa anche di gestire le richieste di vittoria degli utenti, aggiornando la partita 
+ * in cui il giocatore che ha chiamato la vittoria è presente 
+ * @author fritz
+ *
+ */
+
 public class ThreadLobbyTombola implements Runnable{
 	private static ThreadLobbyTombola lt;
 	private PartitaTombola task;

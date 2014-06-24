@@ -1,8 +1,9 @@
 package start;
 
 
-
-// aggiornare tombola con aggiornamento crediti e calcolo premi
+/**
+ * classe che inizializza e fa partire tutti i thread per la gestione delle connessioni e dell'aggiornamento crediti
+ */
 
 import interfacciaDB.ConnessioneDB;
 

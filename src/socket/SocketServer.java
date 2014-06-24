@@ -4,6 +4,13 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
+/**
+ *  thread che si mette in attesa di connessioni da parte del client, ad ogni client connesso viene generato un thread 
+ *  che lo identificherà e gestirà le sue richieste
+ * @author fritz
+ *
+ */
+
 public class SocketServer implements Runnable{
 	private static final int port = 4445;
 	private boolean continua;

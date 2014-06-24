@@ -52,6 +52,7 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 
 	@Override
 	public SituazioneTombola aggTombola() {
+		System.out.println("ricevuto richiesta di aggiornamento tombola");
 		return tc.aggTombola(utente);
 	}
 
@@ -97,9 +98,11 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 		return ih;
 	}
 
-	@Override
+	
 	public boolean logout() throws EccezioneUtente, RemoteException {
+		System.out.println("prima del logout "+continua);
 		continua = tc.termina(utente.getUsername());
+		System.out.println("dopo il logout "+continua);
 		return continua;
 	}
 

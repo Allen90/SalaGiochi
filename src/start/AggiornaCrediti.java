@@ -3,6 +3,12 @@ package start;
 import eccezioni.EccezioneClassificaVuota;
 import interfacciaDB.ConnessioneDB;
 
+/**
+ * classe che gestisce l'aggiornamento periodico dei crediti degli utenti loggati e non
+ * @author fritz
+ *
+ */
+
 public class AggiornaCrediti implements Runnable{
 	private ConnessioneDB db;
 	private boolean continua;

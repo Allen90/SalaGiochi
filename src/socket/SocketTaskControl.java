@@ -28,7 +28,11 @@ import userModel.Login;
 import userModel.Registrazione;
 import userModel.Utente;
 
-//controllare riferimento al passaggio di utente!!!
+/**
+ * thread che gestisce le richieste provenienti dal client
+ * @author fritz
+ *
+ */
 
 
 public class SocketTaskControl implements Runnable{
@@ -55,13 +59,15 @@ public class SocketTaskControl implements Runnable{
 	public void run(){
 		while(continua){
 			try {
-
+				
 				while(!reader.ready()){
 					Thread.sleep(500);
 				}
 
 				stringaClient = reader.readLine();
+				// itentidico il tipo di azione richiesta dal client
 				String azione = Decoder.getTipoAzione(stringaClient);
+				// in base all'azione richiesta richiamo il rispettivo metodo
 				switch(azione){
 				case "LOGIN":{
 					Login l = Decoder.serverLogin(stringaClient);
@@ -152,12 +158,13 @@ public class SocketTaskControl implements Runnable{
 
 	public void termina(){
 		continua = tc.termina(utente.getUsername());
+		writer.println(Encoder.severLogout(continua));
 	}
 
 	public void login(String username,String password) throws EccezioneClassificaVuota{
 		boolean valido = db.controlloUtente(username,password);
 		int posizione = 0;
-		boolean ok = false;
+		boolean ok = true;
 		
 		for(int i=0;i< l.getLoggati().size();i++){
 			if(l.getLoggati().get(i).equals(username)){
@@ -167,13 +174,12 @@ public class SocketTaskControl implements Runnable{
 		
 		if(valido && ok){
 			db.aggiornaUltimoLogin(username);
-			l.addLoggato(utente.getUsername());
 			try {
 				utente = db.getUtente(username);
 			} catch (EccezioneUtente e) {
 				e.printStackTrace();
 			}
-
+			l.addLoggato(utente.getUsername());
 			ArrayList<Utente> classifica = db.getClassifica(false);
 			for(int i=0; i<classifica.size();i++)
 				if(classifica.get(i).getUsername().equals(username))
@@ -182,7 +188,7 @@ public class SocketTaskControl implements Runnable{
 		else{
 			utente = null;
 		}
-		writer.println(Encoder.serverLogin(utente, posizione, valido));
+		writer.println(Encoder.serverLogin(utente, posizione, valido && ok));
 	}
 
 	public void registra(String username,String password,String passwordConf,String nome,String cognome) throws EccezioneClassificaVuota, EccezioneUtente, ParseException{

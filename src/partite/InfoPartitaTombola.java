@@ -1,6 +1,11 @@
 package partite;
 import java.util.*;
 
+/**
+ * singleton che contiene tutte le informazioni delle partite tombola degli utenti che attualmente 
+ * stanno partecipando in una di esse
+ */
+
 import tombola.SituazioneTombola;
 public class InfoPartitaTombola {
 	

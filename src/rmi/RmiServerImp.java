@@ -18,7 +18,12 @@ import rmiServer.RmiServer;
 import rmiServer.RmiTaskControl;
 import start.UtentiLoggati;
 import userModel.Utente;
-
+/**
+ * thread che gestisce le connessioni rmi del client, una volta effettuato il login o la registrazione, viene creato un
+ * thread che gestira' le seguenti richieste del client  
+ * @author fritz
+ *
+ */
 public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runnable{
 
 	private static final long serialVersionUID = 1L;
@@ -33,6 +38,7 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 	public RmiServerImp() throws RemoteException{
 		db = ConnessioneDB.getInstance();
 		l = UtentiLoggati.getIstance();
+		arrayController = new ArrayList<RmiTaskControlImp>();
 	}
 	
 	public void chiudi(){
@@ -42,7 +48,7 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 	}
 
 	public  void run() {
-		arrayController = new ArrayList<RmiTaskControlImp>();
+		
 		continua = true;
 		try {
 			if (System.getSecurityManager() == null)
@@ -70,19 +76,23 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 		RmiTaskControlImp server = null;
 		boolean ok = true;
 		boolean valido = db.controlloUtente(username,password);
+		
 		for(int i=0;i< l.getLoggati().size();i++){
 			if(l.getLoggati().get(i).equals(username)){
 				ok = false;
 			}
 		}
+		
+		System.out.println(valido);
+		System.out.println(ok);
+		
 		if(valido && ok){
 			Utente user = db.getUtente(username);
-			System.out.println("data login" + user.getUltimaVisita());
 			server = new RmiTaskControlImp(user);
 			serverThread = new Thread(server);
-			serverThread.start();
 			arrayController.add(server);
 			l.addLoggato(user.getUsername());
+			serverThread.start();
 			return server;
 		}
 		return null;
@@ -99,7 +109,7 @@ public class RmiServerImp extends UnicastRemoteObject implements RmiServer,Runna
 			db.addUtente(u);
 			u = db.getUtente(username);
 			server = new RmiTaskControlImp(u);
-			arrayController.add(server);
+			//arrayController.add(server);
 			serverThread = new Thread(server);
 			serverThread.start();
 			return server;

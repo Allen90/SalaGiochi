@@ -4,6 +4,13 @@ import java.util.ArrayList;
 
 import rubamazzo.SituazioneRubamazzo;
 
+/**
+ *  singleton che contiene tutte le informazioni delle partite rubamazzo di ogni utente
+ *  che attualmente stanno partecipando in una di esse
+ * @author fritz
+ *
+ */
+
 public class InfoPartitaRubaMazzo {
 	private static InfoPartitaRubaMazzo iprm;
 	private ArrayList<SituazioneRubamazzo> info;

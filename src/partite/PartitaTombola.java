@@ -6,7 +6,13 @@ import tombola.GiocatoreTombola;
 import tombola.SituazioneTombola;
 import tombola.Tabellone;
 
-
+/**
+ *  thread che gestisce una singola partita, rimane attivo finche' almeno un premio è disponibile
+ *  e tutti i numeri non vengono estratti, ad ogni numero estratto aggiorna la situazione partita
+ *  di tutti gli utenti presenti in essa
+ * @author fritz
+ *
+ */
 
 public class PartitaTombola implements Runnable{
 

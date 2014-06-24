@@ -2,6 +2,13 @@ package start;
 
 import java.util.ArrayList;
 
+
+/**
+ * singleton che contiene tutti gli username loggati, viene utilizzato per l'aggiornamento periodico
+ * @author fritz
+ *
+ */
+
 public class UtentiLoggati {
 	private static UtentiLoggati l;
 	private ArrayList<String> loggati;
