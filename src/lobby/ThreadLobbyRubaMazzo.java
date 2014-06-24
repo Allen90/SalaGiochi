@@ -42,15 +42,24 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 	}
 
 	public boolean controllaMossa(String username,int numPartita,Mossa m){
+		System.out.println("mossa ricevuta");
 		boolean ok = false;
 		for(int j = 0; j < partite.get(numPartita).getGiocatori().size();j++){
 			if(partite.get(numPartita).getGiocatori().get(j).getUtente().getUsername().equals(username)){
 
 				int tipo = m.getTipoMossa();
 				switch(tipo){
-				case 0: {partite.get(numPartita).getTavolo().daGiocatoreABanco(m.getCartaGiocata(),username);ok=true;break;}
+				case 0: {try {
+					partite.get(numPartita).getTavolo().daGiocatoreABanco(m.getCartaGiocata(),username);
+					ok = true;
+				} catch (EccezioneRubamazzo e) {
+					ok = false;
+				}
+				break;
+				}
 				case 1:{ try{
 					partite.get(numPartita).getTavolo().daBancoAGiocatore(m.getCartaGiocata(),m.getCartaBersaglio(),username);
+					ok = true;
 				}
 				catch(EccezioneRubamazzo e){
 					ok = false;
@@ -59,6 +68,7 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 				}
 				case 2:{ try{
 					partite.get(numPartita).getTavolo().daBancoAGiocatore(m.getCartaGiocata(),m.getCarteBersaglio(),username);
+					ok = true;
 				}
 				catch(EccezioneRubamazzo e){
 					ok = false;
@@ -67,6 +77,7 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 				}
 				case 3: { try{
 					partite.get(numPartita).getTavolo().daGiocatoreAGiocatore(username,m.getCartaGiocata(),m.getGiocatoreBersaglio());
+					ok = true;
 				}
 				catch(EccezioneRubamazzo e){
 					ok = false;
@@ -76,8 +87,10 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 				}
 			}
 		}
-		if(ok == true)
+		if(ok == true){
+			
 			partite.get(numPartita).setMossaFinita(true);
+		}
 		return ok;
 	}
 
