@@ -178,7 +178,7 @@ public class TaskController {
 
 				s = new Slot();
 				int[] comb = s.calcolaCombinazione();
-				premio = s.getPremio(true);
+				premio = s.getPremio(false);
 				db.aggiornaCrediti(premio,1,utente.getUsername());
 
 				r.setComb(comb);
