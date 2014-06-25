@@ -124,10 +124,12 @@ public class SocketTaskControl implements Runnable{
 				}
 				case "GIOCORUBAMAZZO":{
 					giocoRubaMazzo();
+					break;
 				}
 				
 				case "AGGCREDITI":{
 					aggCrediti();
+					break;
 				}
 				
 				}
