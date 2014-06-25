@@ -82,7 +82,11 @@ public class PartitaTombola implements Runnable{
 		return premioTombola;
 	}
 	
-	
+	/**
+	 * aggiorna le vittorie disponibili nella partita, togliendo quella passata dalla lobby
+	 * @param tipoVittoria
+	 * @return
+	 */
 	public boolean setVittoria(int tipoVittoria){
 		boolean ok = false;
 		if(vincite[tipoVittoria] == false)

@@ -1,5 +1,8 @@
 package start;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import eccezioni.EccezioneClassificaVuota;
 import interfacciaDB.ConnessioneDB;
 
@@ -10,6 +13,7 @@ import interfacciaDB.ConnessioneDB;
  */
 
 public class AggiornaCrediti implements Runnable{
+	
 	private ConnessioneDB db;
 	private boolean continua;
 	public AggiornaCrediti(){
@@ -22,6 +26,7 @@ public class AggiornaCrediti implements Runnable{
 	}
 	
 	public void run() {
+//		Date d = new Date();
 		while(continua){
 		try {
 			Thread.sleep(3600000);
@@ -29,7 +34,8 @@ public class AggiornaCrediti implements Runnable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+//		Date d2 = new Date();
+//		Calendar c = Calendar.
 		try {
 			db.aggiornaPeriodico(1);
 		} catch (EccezioneClassificaVuota e) {

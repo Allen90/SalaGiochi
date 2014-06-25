@@ -20,6 +20,11 @@ import userModel.EntryClassifica;
 import userModel.InfoHome;
 import userModel.Utente;
 
+/**
+ * thread per la gestione delle richieste rmi di un singolo utente
+ * @author fritz
+ *
+ */
 
 public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskControl,Runnable{
 

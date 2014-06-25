@@ -30,7 +30,8 @@ import userModel.Registrazione;
 import userModel.Utente;
 
 /**
- * thread che gestisce le richieste provenienti dal client
+ * thread che gestisce le richieste socket provenienti dal client, riceve una stringa
+ * decodifica il tipo di azione da effettuare e risponde al client di conseguenza
  * @author fritz
  *
  */

@@ -9,7 +9,12 @@ import rubamazzo.GiocatoreRubamazzo;
 import rubamazzo.SituazioneRubamazzo;
 import rubamazzo.TavoloRubamazzo;
 import userModel.Utente;
-
+/**
+ * thread che gestisce una singola partita, una volta lanciato, aspetta il termine del turnodi ogni utente,
+ * aggiornando man mano le informazioni in essa.
+ * @author fritz
+ *
+ */
 public class PartitaRubaMazzo implements Runnable{
 	private InfoPartitaRubaMazzo iprm;
 	private TavoloRubamazzo trm;
@@ -19,6 +24,7 @@ public class PartitaRubaMazzo implements Runnable{
 	private ConnessioneDB db;
 
 	public PartitaRubaMazzo(ArrayList<Utente> utenti,int numPartita){
+		
 		ArrayList<Utente> temp = new ArrayList<>();
 		giocatori = new ArrayList<>();
 		temp.addAll(utenti);
@@ -38,7 +44,10 @@ public class PartitaRubaMazzo implements Runnable{
 		}
 		db = ConnessioneDB.getInstance();
 	}
-
+	/**
+	 * aggiorna il tuo assegnandolo al giocatore successivo, se il giro è finito
+	 * distribuisce le 3 carte della mano
+	 */
 	public void aggiornaTurno(){
 		turno++;
 		if(turno>giocatori.size()-1){
@@ -99,6 +108,11 @@ public class PartitaRubaMazzo implements Runnable{
 						e.printStackTrace();
 					}
 				}
+			
+		}
+		// rimuovo tutte le situazioni partita della sessione ormai conclusa
+		for(int i= 0; i< giocatori.size();i++){
+			iprm.rimuovi(giocatori.get(i).getUtente().getUsername());
 		}
 
 	}

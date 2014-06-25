@@ -1,5 +1,11 @@
 package interfacciaDB;
 
+/**
+ * classe che contiene tutti i prepared statement che verranno utlizzati 
+ * nelle chiamate al database
+ * @author fritz
+ *
+ */
 public class StatementsDB {
 
 	static String aggiornaCrediti = // OK
