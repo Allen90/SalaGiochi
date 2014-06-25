@@ -87,8 +87,8 @@ public class ThreadLobbyRubaMazzo implements Runnable{
 				}
 			}
 		}
+		System.out.println("LOBBY STAMPO ESITO: " + ok);
 		if(ok == true){
-			System.out.println("MOSSA FINITA SETTATO A TRUE");
 			partite.get(numPartita).setMossaFinita(true);
 		}
 		return ok;

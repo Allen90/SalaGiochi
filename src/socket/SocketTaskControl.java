@@ -56,6 +56,87 @@ public class SocketTaskControl implements Runnable{
 		writer = new PrintWriter(client.getOutputStream(), true);
 		l = UtentiLoggati.getIstance();
 	}
+	
+	public synchronized void controlloAzione(){
+		try {
+			stringaClient = reader.readLine();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		// itentidico il tipo di azione richiesta dal client
+		String azione = Decoder.getTipoAzione(stringaClient);
+		// in base all'azione richiesta richiamo il rispettivo metodo
+		try{
+			switch(azione){
+			case "LOGIN":{
+				Login l = Decoder.serverLogin(stringaClient);
+				login(l.getUsername(),l.getPassword());
+				break;
+			}
+			case "REGISTRA":{
+				Registrazione r = Decoder.serverRegistra(stringaClient);
+				try {
+					registra(r.getUsername(),r.getPassword(),r.getConfPass(),r.getNome(),r.getCognome());
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			}
+			case "VINTOTOMBOLA":{
+				System.out.println("ricevuto dal client richiesta di vincita tombola");
+				Vincita v = Decoder.serverVincitaTombola(stringaClient);
+				vintoTombola(v.getNumPartita(),v.getTipoVincita(),v.getIndiceCartella(),v.getIndiceRiga());
+				break;
+			}
+			case "MOSSA":{
+				System.out.println("DECODER RICEVE : " + stringaClient);
+				MossaSocket m = Decoder.serverMossarubamazzo(stringaClient);
+				mossaRubamazzo(m.getMossa(),m.getNumPartita());
+				break;
+			}
+			case "ROLLA":{
+				rolla();
+				break;
+			}
+			case "AGGTOMBOLA":{
+				aggTombola();
+				break;
+			}
+			case "AGGCLASS":{
+				aggClass(false);
+				aggClass(true);
+				break;
+			}
+			case "AGGRUBAMAZZO":{
+				aggRubamazzo();
+				break;
+			}
+			case "LOGOUT":{
+				termina();
+				break;
+			}
+			case "GIOCOTOMBOLA":{
+				int numCartelle = Decoder.serverGiocoTombola(stringaClient);
+				giocoTombola(numCartelle);
+				break;
+			}
+			case "GIOCORUBAMAZZO":{
+				giocoRubaMazzo();
+				break;
+			}
+
+			case "AGGCREDITI":{
+				aggCrediti();
+				break;
+			}
+
+			}
+		}catch(EccezioneUtente | EccezioneClassificaVuota e){
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public void run(){
 		while(continua){
@@ -64,76 +145,8 @@ public class SocketTaskControl implements Runnable{
 				while(!reader.ready()){
 					Thread.sleep(500);
 				}
-
-				stringaClient = reader.readLine();
-				// itentidico il tipo di azione richiesta dal client
-				String azione = Decoder.getTipoAzione(stringaClient);
-				// in base all'azione richiesta richiamo il rispettivo metodo
-				switch(azione){
-				case "LOGIN":{
-					Login l = Decoder.serverLogin(stringaClient);
-					login(l.getUsername(),l.getPassword());
-					break;
-				}
-				case "REGISTRA":{
-					Registrazione r = Decoder.serverRegistra(stringaClient);
-					try {
-						registra(r.getUsername(),r.getPassword(),r.getConfPass(),r.getNome(),r.getCognome());
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					break;
-				}
-				case "VINTOTOMBOLA":{
-					System.out.println("ricevuto dal client richiesta di vincita tombola");
-					Vincita v = Decoder.serverVincitaTombola(stringaClient);
-					vintoTombola(v.getNumPartita(),v.getTipoVincita(),v.getIndiceCartella(),v.getIndiceRiga());
-					break;
-				}
-				case "MOSSA":{
-					MossaSocket m = Decoder.serverMossarubamazzo(stringaClient);
-					mossaRubamazzo(m.getMossa(),m.getNumPartita());
-					break;
-				}
-				case "ROLLA":{
-					rolla();
-					break;
-				}
-				case "AGGTOMBOLA":{
-					aggTombola();
-					break;
-				}
-				case "AGGCLASS":{
-					aggClass(false);
-					aggClass(true);
-					break;
-				}
-				case "AGGRUBAMAZZO":{
-					aggRubamazzo();
-					break;
-				}
-				case "LOGOUT":{
-					termina();
-					break;
-				}
-				case "GIOCOTOMBOLA":{
-					int numCartelle = Decoder.serverGiocoTombola(stringaClient);
-					giocoTombola(numCartelle);
-					break;
-				}
-				case "GIOCORUBAMAZZO":{
-					giocoRubaMazzo();
-					break;
-				}
-				
-				case "AGGCREDITI":{
-					aggCrediti();
-					break;
-				}
-				
-				}
-			} catch (IOException | EccezioneUtente | EccezioneClassificaVuota e) {
+				controlloAzione();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {

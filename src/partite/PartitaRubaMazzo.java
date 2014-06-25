@@ -86,7 +86,6 @@ public class PartitaRubaMazzo implements Runnable{
 					e.printStackTrace();
 				}
 			}
-			System.out.println("mossa finita, aggiorno il turno");
 			aggiornaTurno();
 		}
 		ArrayList<String> vincitori = trm.getVincitore();
