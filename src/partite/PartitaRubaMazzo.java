@@ -88,22 +88,14 @@ public class PartitaRubaMazzo implements Runnable{
 		}
 		ArrayList<String> vincitori = trm.getVincitore();
 		int premio = trm.getPremio();
-		boolean vincitore = false;
 		for(int i = 0;i<giocatori.size();i++){
 			for(int j=0;j<vincitori.size();j++)
 				if(giocatori.get(i).getUtente().getUsername().equals(vincitori.get(j))){
 					try {
-						db.aggiornaCrediti(premio, 1, giocatori.get(i).getUtente().getUsername());
+						db.aggiornaCrediti(premio, 0, giocatori.get(i).getUtente().getUsername());
 					} catch (EccezioneUtente e) {
 						e.printStackTrace();
 					}
-					vincitore = true;
-				}
-			if(!vincitore)
-				try {
-					db.aggiornaCrediti(0, 20, giocatori.get(i).getUtente().getUsername());
-				} catch (EccezioneUtente e) {
-					e.printStackTrace();
 				}
 		}
 
