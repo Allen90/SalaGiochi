@@ -62,8 +62,10 @@ public class StartServerGUI {
 					FileInputStream fileInStr = new FileInputStream(file); 
 					DataInputStream dataIn = new DataInputStream(fileInStr); 
 					long ore = dataIn.readLong();
-					int oreShutdown = (int) ore/3600000;
-					db.aggiornaPeriodico(oreShutdown);
+					Date d = new Date();
+					Long oreShutdown = d.getTime()/3600000 -ore/ 3600000;
+					System.out.println(oreShutdown);
+					db.aggiornaPeriodico(oreShutdown.intValue());
 					System.out.println(ore);
 					dataIn.close(); 
 					fileInStr.close();

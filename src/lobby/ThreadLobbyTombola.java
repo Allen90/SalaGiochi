@@ -92,7 +92,7 @@ public class ThreadLobbyTombola implements Runnable{
 				e1.printStackTrace();
 			}
 			//System.out.println("utenti presenti:" + numUtentiLobby());
-			if(n > 0){
+			if(n > 1){
 				System.out.println("qui in lobby con piu' di una persona");
 				//				try {
 				try {

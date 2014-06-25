@@ -2,6 +2,8 @@ package rmi;
 
 
 
+import interfacciaDB.ConnessioneDB;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -25,12 +27,14 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 	private Utente utente;
 	private Boolean continua;
 	private TaskController tc;
+	private ConnessioneDB db;
 	
 	
 	public RmiTaskControlImp(Utente utente) throws RemoteException{
 		this.utente = utente;
 		continua = true;
 		tc = new TaskController();
+		db = ConnessioneDB.getInstance();
 	}
 	
 	@Override
@@ -93,6 +97,7 @@ public class RmiTaskControlImp extends UnicastRemoteObject implements RmiTaskCon
 
 	
 	public InfoHome getInfoHome() throws EccezioneUtente{
+		utente = db.getUtente(utente.getUsername());
 		int posizione = tc.getPosizione(utente.getUsername());
 		InfoHome ih = new InfoHome(utente.getNome(),utente.getCognome(),utente.getCrediti(),posizione, utente.getUltimaVisita());
 		return ih;
