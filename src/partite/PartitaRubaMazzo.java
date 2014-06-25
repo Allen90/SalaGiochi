@@ -15,7 +15,7 @@ public class PartitaRubaMazzo implements Runnable{
 	private TavoloRubamazzo trm;
 	private ArrayList<GiocatoreRubamazzo> giocatori;
 	private boolean mossaFinita;
-	private int turno;
+	private int turno, giro;
 	private ConnessioneDB db;
 
 	public PartitaRubaMazzo(ArrayList<Utente> utenti,int numPartita){
@@ -29,6 +29,7 @@ public class PartitaRubaMazzo implements Runnable{
 		trm = new TavoloRubamazzo(giocatori);
 		iprm = InfoPartitaRubaMazzo.getInstance();
 		turno = 0;
+		giro = 0;
 		for(int i=0;i<giocatori.size();i++){
 			SituazioneRubamazzo s = new SituazioneRubamazzo(trm, giocatori.get(i),numPartita);
 			if( i == 0)
@@ -40,11 +41,13 @@ public class PartitaRubaMazzo implements Runnable{
 
 	public void aggiornaTurno(){
 		turno++;
-		System.out.println("STO PER AGGIORNARE IL TURNO");
 		if(turno>giocatori.size()-1){
 			turno = 0;
-			System.out.println("TURNO AGGIORNATO :" + turno);
-			trm.daiCarte(giocatori);
+			giro ++;
+			if(giro >= 3){
+				giro = 0;
+				trm.daiCarteInizio(giocatori);
+			}
 		}
 			
 		for(int i=0;i<giocatori.size();i++){
