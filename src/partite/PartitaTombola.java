@@ -122,7 +122,6 @@ public class PartitaTombola implements Runnable{
 	public void run() {
 		
 		while(!tabellone.terminato() && terminato == false){
-			//System.out.println("Ho il ciclo");
 			try {
 				Thread.sleep(4000);
 			} catch (InterruptedException e) {
@@ -145,7 +144,9 @@ public class PartitaTombola implements Runnable{
 
 
 		}
-		System.out.println("anto bananaro");
-
+		// rimuovo tutte le situazioni partita della sessione ormai conclusa
+				for(int i= 0; i< giocatori.size();i++){
+					ipt.rimuovi(giocatori.get(i).getUtente().getUsername());
+				}
 	}
 }
